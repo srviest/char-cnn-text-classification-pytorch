@@ -8,6 +8,7 @@ import torchtext.datasets as datasets
 import model
 import train
 import mydatasets
+from data_loader_txt import mr
 
 
 parser = argparse.ArgumentParser(description='CNN text classificer')
@@ -38,37 +39,12 @@ parser.add_argument('-test', action='store_true', default=False, help='train or 
 args = parser.parse_args()
 
 
-# load SST dataset
-def sst(text_field, label_field,  **kargs):
-    train_data, dev_data, test_data = datasets.SST.splits(text_field, label_field, fine_grained=True)
-    text_field.build_vocab(train_data, dev_data, test_data)
-    label_field.build_vocab(train_data, dev_data, test_data)
-    train_iter, dev_iter, test_iter = data.BucketIterator.splits(
-                                        (train_data, dev_data, test_data), 
-                                        batch_sizes=(args.batch_size, 
-                                                     len(dev_data), 
-                                                     len(test_data)),
-                                        **kargs)
-    return train_iter, dev_iter, test_iter 
-
-
-# load MR dataset
-def mr(text_field, label_field, **kargs):
-    train_data, dev_data = mydatasets.MR.splits(text_field, label_field)
-    text_field.build_vocab(train_data, dev_data)
-    label_field.build_vocab(train_data, dev_data)
-    train_iter, dev_iter = data.Iterator.splits(
-                                (train_data, dev_data), 
-                                batch_sizes=(args.batch_size, len(dev_data)),
-                                **kargs)
-    return train_iter, dev_iter
-
 
 # load data
 print("\nLoading data...")
 text_field = data.Field(lower=True)
 label_field = data.Field(sequential=False)
-train_iter, dev_iter = mr(text_field, label_field, device=-1, repeat=False)
+train_iter, dev_iter = mr(text_field, label_field, batch_size=args.batch_size, device=-1, repeat=False)
 #train_iter, dev_iter, test_iter = sst(text_field, label_field, device=-1, repeat=False)
 
 
