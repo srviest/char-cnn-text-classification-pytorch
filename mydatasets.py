@@ -78,10 +78,10 @@ class MR(TarDataset):
         if examples is None:
             path = self.dirname if path is None else path
             examples = []
-            with codecs.open(os.path.join(path, 'rt-polarity.neg'), errors='ignore') as f:
+            with codecs.open(os.path.join(path, 'rt-polarity.neg'), encoding='utf-8', errors='ignore') as f:
                 examples += [
                     data.Example.fromlist([line, 'negative'], fields) for line in f]
-            with codecs.open(os.path.join(path, 'rt-polarity.pos'), errors='ignore') as f:
+            with codecs.open(os.path.join(path, 'rt-polarity.pos'), encoding='utf-8', errors='ignore') as f:
                 examples += [
                     data.Example.fromlist([line, 'positive'], fields) for line in f]
         super(MR, self).__init__(examples, fields, **kwargs)
