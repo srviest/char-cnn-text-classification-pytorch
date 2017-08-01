@@ -15,13 +15,14 @@ def train(train_iter, dev_iter, model, args):
     model.train()
     for epoch in range(1, args.epochs+1):
         for batch in train_iter:
-            feature, target = batch.text, batch.label
-            feature.data.t_(), target.data.sub_(1)  # batch first, index align
+            inputs, target = batch.text, batch.label
+
+            inputs.data.t_(), target.data.sub_(1)  # batch first, index align
             if args.cuda:
-                feature, target = feature.cuda(), target.cuda()
+                inputs, target = inputs.cuda(), target.cuda()
 
             optimizer.zero_grad()
-            logit = model(feature)
+            logit = model(inputs)
 
             #print('logit vector', logit.size())
             #print('target vector', target.size())
@@ -52,12 +53,12 @@ def eval(data_iter, model, args):
     model.eval()
     corrects, avg_loss = 0, 0
     for batch in data_iter:
-        feature, target = batch.text, batch.label
-        feature.data.t_(), target.data.sub_(1)  # batch first, index align
+        inputs, target = batch.text, batch.label
+        inputs.data.t_(), target.data.sub_(1)  # batch first, index align
         if args.cuda:
-            feature, target = feature.cuda(), target.cuda()
+            inputs, target = inputs.cuda(), target.cuda()
 
-        logit = model(feature)
+        logit = model(inputs)
         loss = F.cross_entropy(logit, target, size_average=False)
 
         avg_loss += loss.data[0]
