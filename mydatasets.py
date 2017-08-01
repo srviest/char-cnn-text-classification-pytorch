@@ -5,7 +5,7 @@ import tarfile
 from six.moves import urllib
 from torchtext import data
 import codecs
-
+import mydatasets
 
 class TarDataset(data.Dataset):
     """Defines a Dataset loaded from a downloadable tar archive.

@@ -1,6 +1,7 @@
 #! /usr/bin/env python
 import torchtext.data as data
 import torchtext.datasets as datasets
+import mydatasets
 
 # load SST dataset
 def sst(text_field, label_field, batch_size, **kargs):

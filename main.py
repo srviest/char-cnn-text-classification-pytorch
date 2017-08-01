@@ -7,7 +7,6 @@ import torchtext.data as data
 import torchtext.datasets as datasets
 import model
 import train
-import mydatasets
 from data_loader_txt import mr
 
 
