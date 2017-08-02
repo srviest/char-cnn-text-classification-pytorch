@@ -16,8 +16,10 @@ def train(train_iter, dev_iter, model, args):
     for epoch in range(1, args.epochs+1):
         for batch in train_iter:
             inputs, target = batch.text, batch.label
-            print('inputs', inputs)
+            print('\n')
+            print('inputs[:,0]', inputs[:,0])
             print('target', target)
+
 
             inputs.data.t_(), target.data.sub_(1)  # batch first, index align
             if args.cuda:
