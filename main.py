@@ -37,6 +37,7 @@ parser.add_argument('-kernel-num', type=int, default=100, help='number of each k
 parser.add_argument('-kernel-sizes', type=str, default='3,4,5', help='comma-separated kernel size to use for convolution')
 parser.add_argument('-static', action='store_true', default=False, help='fix the embedding')
 # device
+parser.add_argument('--num_workers', default=4, type=int, help='Number of workers used in data-loading')
 parser.add_argument('-device', type=int, default=-1, help='device to use for iterate data, -1 mean cpu [default: -1]')
 parser.add_argument('-no-cuda', action='store_true', default=False, help='disable the gpu' )
 # option
@@ -55,11 +56,11 @@ train_iter, dev_iter = mr(text_field, label_field, batch_size=args.batch_size, d
 
 print("\nLoading training data...")
 train_dataset = AGNEWs(label_data_path=args.train_path, alphabet_path=args.alphabet_path)
-train_loader = DataLoader(train_dataset, batch_size=args.batch_size)
+train_loader = DataLoader(train_dataset, batch_size=args.batch_size, num_workers=args.num_workers)
 
 print("\nLoading Validating data...")
 dev_dataset = AGNEWs(label_data_path=args.val_path, alphabet_path=args.alphabet_path)
-dev_loader = DataLoader(dev_dataset, batch_size=args.batch_size)
+dev_loader = DataLoader(dev_dataset, batch_size=args.batch_size, num_workers=args.num_workers)
 
 #train_iter, dev_iter, test_iter = sst(text_field, label_field, device=-1, repeat=False)
 

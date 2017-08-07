@@ -41,9 +41,9 @@ def train(train_loader, dev_loader, model, args):
             #print('logit vector', logit.size())
             #print('target vector', target.size())
 
-            loss = F.nll_loss(logit, target)
+            # loss = F.nll_loss(logit, target)
 
-            # loss = F.cross_entropy(logit, target)
+            loss = F.cross_entropy(logit, target)
             loss.backward()
             optimizer.step()
 
