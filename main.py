@@ -49,9 +49,9 @@ args = parser.parse_args()
 
 
 # load data
-text_field = data.Field(lower=True)
-label_field = data.Field(sequential=False)
-train_iter, dev_iter = mr(text_field, label_field, batch_size=args.batch_size, device=-1, repeat=False)
+# text_field = data.Field(lower=True)
+# label_field = data.Field(sequential=False)
+# train_iter, dev_iter = mr(text_field, label_field, batch_size=args.batch_size, device=-1, repeat=False)
 
 print("\nLoading training data...")
 train_dataset = AGNEWs(label_data_path=args.train_path, alphabet_path=args.alphabet_path)
