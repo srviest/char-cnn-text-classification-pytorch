@@ -18,7 +18,6 @@ def train(train_loader, dev_loader, model, args):
             inputs = sample_batched['data']
             target = sample_batched['label']
             target.sub_(1)
-            print('type(target): ', type(target))
         # for batch in train_iter:
             # inputs, target = batch.text, batch.label
             # print('\n')
