@@ -34,8 +34,8 @@ def train(train_loader, dev_loader, model, args):
 
             optimizer.zero_grad()
             logit = model(inputs)
-            print(type(logit))
-            print(type(target))
+            # print(type(logit))
+            # print(type(target))
 
             #print('logit vector', logit.size())
             #print('target vector', target.size())
@@ -77,7 +77,9 @@ def eval(data_loader, model, args):
         # inputs.data.t_(), target.data.sub_(1)  # batch first, index align
         if args.cuda:
             inputs, target = inputs.cuda(), target.cuda()
-
+            
+        inputs = autograd.Variable(inputs)
+        target = autograd.Variable(target)
         logit = model(inputs)
         # loss = F.cross_entropy(logit, target, size_average=False)
         loss = F.nll_loss(logit, target, size_average=False)
