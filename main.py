@@ -56,10 +56,12 @@ train_iter, dev_iter = mr(text_field, label_field, batch_size=args.batch_size, d
 
 print("\nLoading training data...")
 train_dataset = AGNEWs(label_data_path=args.train_path, alphabet_path=args.alphabet_path)
+print("\nTransferring training data into iterator...")
 train_loader = DataLoader(train_dataset, batch_size=args.batch_size, num_workers=args.num_workers)
 
 print("\nLoading Validating data...")
 dev_dataset = AGNEWs(label_data_path=args.val_path, alphabet_path=args.alphabet_path)
+print("\nTransferring validating data into iterator...")
 dev_loader = DataLoader(dev_dataset, batch_size=args.batch_size, num_workers=args.num_workers)
 
 #train_iter, dev_iter, test_iter = sst(text_field, label_field, device=-1, repeat=False)
