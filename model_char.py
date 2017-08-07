@@ -44,12 +44,12 @@ class  CharCNN(nn.Module):
         self.fc1 = nn.Sequential(
             nn.Linear(8704, 1024),
             nn.Threshold(1e-6, 0),
-            NN.Dropout(P=0.5)
+            nn.Dropout(P=0.5)
         )
         self.fc2 = nn.Sequential(
             nn.Linear(1024, 1024),
             nn.Threshold(1e-6, 0),
-            NN.Dropout(P=0.5)
+            nn.Dropout(P=0.5)
         )
         self.fc3 = nn.Sequential(
             nn.Linear(1024, 4),
