@@ -23,7 +23,7 @@ class AGNEWs(Dataset):
         self.l0 = l0
         self.label, self.data = self.load()
 
-        self.y = torch.FloatTensor(self.label)
+        self.y = torch.LongTensor(self.label)
         self.X = self.oneHotEncode(self.data)
         
     def __len__(self):

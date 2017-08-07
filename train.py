@@ -17,8 +17,6 @@ def train(train_loader, dev_loader, model, args):
         for i_batch, sample_batched in enumerate(train_loader):
             inputs = sample_batched['data']
             target = sample_batched['label']
-            target = target.float()
-            print('type(target): ', type(target))
             target.sub_(1)
             print('type(target): ', type(target))
         # for batch in train_iter:
