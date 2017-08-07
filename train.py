@@ -77,17 +77,19 @@ def eval(data_loader, model, args):
         # inputs.data.t_(), target.data.sub_(1)  # batch first, index align
         if args.cuda:
             inputs, target = inputs.cuda(), target.cuda()
-            
+
         inputs = autograd.Variable(inputs)
         target = autograd.Variable(target)
         logit = model(inputs)
         # loss = F.cross_entropy(logit, target, size_average=False)
         loss = F.nll_loss(logit, target, size_average=False)
 
-
-        avg_loss += loss.data[0]
-        corrects += (torch.max(logit, 1)
-                     [1].view(target.size()).data == target.data).sum()
+        correct = (torch.max(logit, 1)[1].view(target.size()).data == target.data).sum()
+        batch_loss = loss.data[0]
+        print('correct: ', correct)
+        print('batch_loss: ', batch_loss)
+        avg_loss += batch_loss
+        corrects += correct
 
     size = len(data_loader)
     avg_loss = loss.data[0]/size

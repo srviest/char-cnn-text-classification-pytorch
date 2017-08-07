@@ -4,9 +4,8 @@ import torch.nn.functional as F
 
 class  CharCNN(nn.Module):
     
-    def __init__(self, args):
+    def __init__(self):
         super(CharCNN, self).__init__()
-        self.args = args
         self.conv1 = nn.Sequential(
             nn.Conv1d(70, 256, kernel_size=7, stride=1),
             nn.Threshold(1e-6, 0),
