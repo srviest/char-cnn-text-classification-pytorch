@@ -5,7 +5,7 @@ import torch.autograd as autograd
 import torch.nn.functional as F
 
 
-def train(train_iter, dev_iter, model, args):
+def train(train_loader, dev_loader, model, args):
     if args.cuda:
         model.cuda()
 
@@ -14,38 +14,49 @@ def train(train_iter, dev_iter, model, args):
     steps = 0
     model.train()
     for epoch in range(1, args.epochs+1):
-        for batch in train_iter:
-            inputs, target = batch.text, batch.label
-            print('\n')
-            print('inputs[:,0]', inputs[:,0])
-            print('target', target)
+        for i_batch, sample_batched in enumerate(train_loader):
+            inputs = sample_batched['data']
+            target = sample_batched['label']
+            target.sub_(1)
+            
+        # for batch in train_iter:
+            # inputs, target = batch.text, batch.label
+            # print('\n')
+            # print('inputs[:,0]', inputs[:,0])
+            # print('target', target)
 
 
-            inputs.data.t_(), target.data.sub_(1)  # batch first, index align
+            # inputs.data.t_(), target.data.sub_(1)  # batch first, index align
             if args.cuda:
                 inputs, target = inputs.cuda(), target.cuda()
+                
+            inputs = autograd.Variable(inputs)
+            target = autograd.Variable(target)
 
             optimizer.zero_grad()
             logit = model(inputs)
 
             #print('logit vector', logit.size())
             #print('target vector', target.size())
-            loss = F.cross_entropy(logit, target)
+
+            loss = F.nll_loss(logit, target)
+
+            # loss = F.cross_entropy(logit, target)
             loss.backward()
             optimizer.step()
 
             steps += 1
             if steps % args.log_interval == 0:
                 corrects = (torch.max(logit, 1)[1].view(target.size()).data == target.data).sum()
-                accuracy = 100.0 * corrects/batch.batch_size
+                accuracy = 100.0 * corrects/args.batch_size
                 sys.stdout.write(
                     '\rBatch[{}] - loss: {:.6f}  acc: {:.4f}%({}/{})'.format(steps, 
                                                                              loss.data[0], 
                                                                              accuracy,
                                                                              corrects,
-                                                                             batch.batch_size))
+                                                                             args.batch_size))
             if steps % args.test_interval == 0:
-                eval(dev_iter, model, args)
+                eval(dev_loader, model, args)
             if steps % args.save_interval == 0:
                 if not os.path.isdir(args.save_dir): os.makedirs(args.save_dir)
                 save_prefix = os.path.join(args.save_dir, 'snapshot')
@@ -53,23 +64,29 @@ def train(train_iter, dev_iter, model, args):
                 torch.save(model, save_path)
 
 
-def eval(data_iter, model, args):
+def eval(data_loader, model, args):
     model.eval()
     corrects, avg_loss = 0, 0
-    for batch in data_iter:
-        inputs, target = batch.text, batch.label
-        inputs.data.t_(), target.data.sub_(1)  # batch first, index align
+    # for batch in data_loader:
+    for i_batch, sample_batched in enumerate(data_loader):
+        inputs = sample_batched['data']
+        target = sample_batched['label']
+        target.sub_(1)
+        # inputs, target = batch.text, batch.label
+        # inputs.data.t_(), target.data.sub_(1)  # batch first, index align
         if args.cuda:
             inputs, target = inputs.cuda(), target.cuda()
 
         logit = model(inputs)
-        loss = F.cross_entropy(logit, target, size_average=False)
+        # loss = F.cross_entropy(logit, target, size_average=False)
+        loss = F.nll_loss(logit, target, size_average=False)
+
 
         avg_loss += loss.data[0]
         corrects += (torch.max(logit, 1)
                      [1].view(target.size()).data == target.data).sum()
 
-    size = len(data_iter.dataset)
+    size = len(data_loader)
     avg_loss = loss.data[0]/size
     accuracy = 100.0 * corrects/size
     model.train()

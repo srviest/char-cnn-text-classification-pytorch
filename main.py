@@ -5,9 +5,11 @@ import datetime
 import torch
 import torchtext.data as data
 import torchtext.datasets as datasets
+import model_char
 import model
 import train
 from data_loader_txt import mr
+from data_loader_char import AGNEWs
 
 
 parser = argparse.ArgumentParser(description='CNN text classificer')
@@ -20,7 +22,12 @@ parser.add_argument('-test-interval', type=int, default=100, help='how many step
 parser.add_argument('-save-interval', type=int, default=500, help='how many steps to wait before saving [default:500]')
 parser.add_argument('-save-dir', type=str, default='snapshot', help='where to save the snapshot')
 # data 
+parser.add_argument('--train_path', metavar='DIR',
+                    help='path to training data csv', default='data/ag_news_csv/train.csv')
+parser.add_argument('--val_path', metavar='DIR',
+                    help='path to validating data csv', default='data/ag_news_csv/test.csv')
 parser.add_argument('-shuffle', action='store_true', default=False, help='shuffle the data every epoch' )
+parser.add_argument('--alphabet_path', default='alphabet.json', help='Contains all characters for prediction')
 # model
 parser.add_argument('-dropout', type=float, default=0.5, help='the probability for dropout [default: 0.5]')
 parser.add_argument('-max-norm', type=float, default=3.0, help='l2 constraint of parameters [default: 3.0]')
@@ -44,6 +51,12 @@ print("\nLoading data...")
 text_field = data.Field(lower=True)
 label_field = data.Field(sequential=False)
 train_iter, dev_iter = mr(text_field, label_field, batch_size=args.batch_size, device=-1, repeat=False)
+train_dataset = AGNEWs(label_data_path=args.train_path, alphabet_path=agrs.alphabet_path)
+train_loader = DataLoader(train_dataset, batch_size=args.batch_size)
+
+dev_dataset = AGNEWs(label_data_path=args.val_path, alphabet_path=agrs.alphabet_path)
+dev_loader = DataLoader(dev_dataset, batch_size=args.batch_size)
+
 #train_iter, dev_iter, test_iter = sst(text_field, label_field, device=-1, repeat=False)
 
 
@@ -61,7 +74,9 @@ for attr, value in sorted(args.__dict__.items()):
 
 # model
 if args.snapshot is None:
-    cnn = model.CNN_Text(args)
+    cnn = model_char.CharCNN(args)
+    # cnn = model.CNN_Text(args)
+    
 else :
     print('\nLoading model from [%s]...' % args.snapshot)
     try:
@@ -84,6 +99,6 @@ elif args.test :
         print("\nSorry. The test dataset doesn't  exist.\n")
 else :
     print()
-    train.train(train_iter, dev_iter, cnn, args)
+    train.train(train_loader, dev_loader, cnn, args)
     
 
