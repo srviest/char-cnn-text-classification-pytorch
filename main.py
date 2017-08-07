@@ -48,13 +48,16 @@ args = parser.parse_args()
 
 
 # load data
-print("\nLoading data...")
+
 text_field = data.Field(lower=True)
 label_field = data.Field(sequential=False)
 train_iter, dev_iter = mr(text_field, label_field, batch_size=args.batch_size, device=-1, repeat=False)
+
+print("\nLoading training data...")
 train_dataset = AGNEWs(label_data_path=args.train_path, alphabet_path=args.alphabet_path)
 train_loader = DataLoader(train_dataset, batch_size=args.batch_size)
 
+print("\nLoading Validating data...")
 dev_dataset = AGNEWs(label_data_path=args.val_path, alphabet_path=args.alphabet_path)
 dev_loader = DataLoader(dev_dataset, batch_size=args.batch_size)
 
