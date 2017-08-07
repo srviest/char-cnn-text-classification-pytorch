@@ -55,6 +55,7 @@ args = parser.parse_args()
 
 print("\nLoading training data...")
 train_dataset = AGNEWs(label_data_path=args.train_path, alphabet_path=args.alphabet_path)
+print('type(train_dataset.y): ', type(train_dataset.y))
 print("\nTransferring training data into iterator...")
 train_loader = DataLoader(train_dataset, batch_size=args.batch_size, num_workers=args.num_workers)
 
