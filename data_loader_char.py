@@ -69,14 +69,17 @@ if __name__ == '__main__':
     alphabet_path = '/Users/ychen/Documents/TextClfy/alphabet.json'
 
     train_dataset = AGNEWs(label_data_path, alphabet_path)
-    train_loader = DataLoader(train_dataset, batch_size=4)
+    train_loader = DataLoader(train_dataset, batch_size=4, num_workers=4)
 
 
     for i_batch, sample_batched in enumerate(train_loader):
-        print(sample_batched['data'].size())
-        inputs = sample_batched['data']
-        inputs = autograd.Variable(inputs)
-        print(inputs.data)
+        print(sample_batched['label'].size())
+        target = sample_batched['label']
+        print('type(target): ', target)
+        target = target.float()
+        print('type(target): ', target)
+        # inputs = autograd.Variable(inputs)
+        # print(inputs.data)
         # print(sample_batched['data'][0])
         # print(sample_batched['label'])
         # print i_batch
