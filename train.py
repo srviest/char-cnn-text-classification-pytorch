@@ -11,9 +11,9 @@ def train(train_loader, dev_loader, model, args):
 
     optimizer = torch.optim.Adam(model.parameters(), lr=args.lr)
 
-    steps = 0
     model.train()
     for epoch in range(1, args.epochs+1):
+        steps = 0
         for i_batch, sample_batched in enumerate(train_loader):
             inputs = sample_batched['data']
             target = sample_batched['label']
@@ -37,7 +37,7 @@ def train(train_loader, dev_loader, model, args):
         
             # loss = F.nll_loss(logit, target)
             loss = F.cross_entropy(logit, target)
-            
+
             loss.backward()
             optimizer.step()
 
@@ -46,8 +46,9 @@ def train(train_loader, dev_loader, model, args):
                 corrects = (torch.max(logit, 1)[1].view(target.size()).data == target.data).sum()
                 accuracy = 100.0 * corrects/args.batch_size
                 sys.stdout.write(
-                    '\rBatch[{}] - loss: {:.6f}  acc: {:.4f}%({}/{})'.format(steps, 
-                                                                             loss.data[0], 
+                    '\rEpoch[{}] Batch[{}] - loss: {:.6f}  acc: {:.4f}%({}/{})'.format(epoch,
+                                                                             steps,
+                                                                             loss.data[0],
                                                                              accuracy,
                                                                              corrects,
                                                                              args.batch_size))
