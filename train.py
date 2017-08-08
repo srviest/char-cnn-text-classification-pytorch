@@ -38,12 +38,9 @@ def train(train_loader, dev_loader, model, args):
             if i_batch==0: 
                 print(logit)
             
-            # print(type(target))
-
-            #print('logit vector', logit.size())
-            #print('target vector', target.size())
-
+            print(target)
             loss = F.nll_loss(logit, target)
+            
 
             # loss = F.cross_entropy(logit, target)
             loss.backward()
@@ -100,10 +97,10 @@ def eval(data_loader, model, args):
     avg_loss = loss.data[0]/size
     accuracy = 100.0 * corrects/size
     print('loss.data[0]: ', loss.data[0])
-    print('corrects: ', corrects)
-    print('size: ', size)
+    # print('corrects: ', corrects)
+    # print('size: ', size)
     print('avg_loss: ', avg_loss)
-    print('accuracy: ', accuracy)
+    # print('accuracy: ', accuracy)
     model.train()
     print('\nEvaluation - loss: {:.6f}  acc: {:.4f}%({}/{}) \n'.format(avg_loss, 
                                                                        accuracy, 
