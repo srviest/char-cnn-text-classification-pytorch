@@ -34,11 +34,7 @@ def train(train_loader, dev_loader, model, args):
 
             optimizer.zero_grad()
             logit = model(inputs)
-            print('logit.size(): ', logit.size())
-            if i_batch==0: 
-                print(logit)
-            
-            # print(target)
+        
             loss = F.nll_loss(logit, target)
             
 
