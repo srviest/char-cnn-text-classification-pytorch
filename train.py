@@ -86,14 +86,19 @@ def eval(data_loader, model, args):
 
         correct = (torch.max(logit, 1)[1].view(target.size()).data == target.data).sum()
         batch_loss = loss.data[0]
-        print('correct: ', correct)
-        print('batch_loss: ', batch_loss)
+        # print('correct: ', correct)
+        # print('batch_loss: ', batch_loss)
         avg_loss += batch_loss
         corrects += correct
 
     size = len(data_loader)
     avg_loss = loss.data[0]/size
     accuracy = 100.0 * corrects/size
+    print('loss.data[0]: ', loss.data[0])
+    print('corrects: ', corrects)
+    print('size: ', size)
+    print('avg_loss: ', avg_loss)
+    print('accuracy: ', accuracy)
     model.train()
     print('\nEvaluation - loss: {:.6f}  acc: {:.4f}%({}/{}) \n'.format(avg_loss, 
                                                                        accuracy, 
