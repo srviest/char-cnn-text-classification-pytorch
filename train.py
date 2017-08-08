@@ -67,7 +67,7 @@ def train(train_loader, dev_loader, model, args):
 
 def eval(data_loader, model, args):
     model.eval()
-    corrects, avg_loss = 0, 0
+    corrects, avg_loss, size = 0, 0, 0
     # for batch in data_loader:
     for i_batch, sample_batched in enumerate(data_loader):
         inputs = sample_batched['data']
@@ -90,8 +90,10 @@ def eval(data_loader, model, args):
         # print('batch_loss: ', batch_loss)
         avg_loss += batch_loss
         corrects += correct
+        size+=len(target)
 
-    size = len(data_loader)
+    # print(len(target))
+    # size = len(data_loader)
     avg_loss = loss.data[0]/size
     accuracy = 100.0 * corrects/size
     print('loss.data[0]: ', loss.data[0])
