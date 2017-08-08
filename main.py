@@ -16,8 +16,8 @@ from torch.utils.data import DataLoader
 parser = argparse.ArgumentParser(description='CNN text classificer')
 # learning
 parser.add_argument('-lr', type=float, default=0.005, help='initial learning rate [default: 0.005]')
-parser.add_argument('-epochs', type=int, default=2048, help='number of epochs for train [default: 256]')
-parser.add_argument('-batch-size', type=int, default=64, help='batch size for training [default: 64]')
+parser.add_argument('-epochs', type=int, default=2500, help='number of epochs for train [default: 2500]')
+parser.add_argument('-batch-size', type=int, default=128, help='batch size for training [default: 128]')
 parser.add_argument('-log-interval',  type=int, default=1,   help='how many steps to wait before logging training status [default: 1]')
 parser.add_argument('-test-interval', type=int, default=100, help='how many steps to wait before testing [default: 100]')
 parser.add_argument('-save-interval', type=int, default=500, help='how many steps to wait before saving [default:500]')
@@ -80,6 +80,8 @@ for attr, value in sorted(args.__dict__.items()):
 
 # model
 if args.snapshot is None:
+    num_features = len(train_dataset.alphabet)
+    print(num_features)
     cnn = model_char.CharCNN()
     # cnn = model.CNN_Text(args)
     

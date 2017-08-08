@@ -38,7 +38,7 @@ def train(train_loader, dev_loader, model, args):
             if i_batch==0: 
                 print(logit)
             
-            print(target)
+            # print(target)
             loss = F.nll_loss(logit, target)
             
 
