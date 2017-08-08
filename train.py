@@ -34,7 +34,10 @@ def train(train_loader, dev_loader, model, args):
 
             optimizer.zero_grad()
             logit = model(inputs)
-            # print(type(logit))
+            print('logit.size(): ', logit.size())
+            if i_batch==0: 
+                print(logit)
+            
             # print(type(target))
 
             #print('logit vector', logit.size())
