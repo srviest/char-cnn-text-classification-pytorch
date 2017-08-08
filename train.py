@@ -35,10 +35,9 @@ def train(train_loader, dev_loader, model, args):
             optimizer.zero_grad()
             logit = model(inputs)
         
-            loss = F.nll_loss(logit, target)
+            # loss = F.nll_loss(logit, target)
+            loss = F.cross_entropy(logit, target)
             
-
-            # loss = F.cross_entropy(logit, target)
             loss.backward()
             optimizer.step()
 
@@ -77,8 +76,8 @@ def eval(data_loader, model, args):
         inputs = autograd.Variable(inputs)
         target = autograd.Variable(target)
         logit = model(inputs)
-        # loss = F.cross_entropy(logit, target, size_average=False)
-        loss = F.nll_loss(logit, target, size_average=False)
+        loss = F.cross_entropy(logit, target, size_average=False)
+        # loss = F.nll_loss(logit, target, size_average=False)
 
         correct = (torch.max(logit, 1)[1].view(target.size()).data == target.data).sum()
         batch_loss = loss.data[0]
@@ -92,10 +91,10 @@ def eval(data_loader, model, args):
     # size = len(data_loader)
     avg_loss = loss.data[0]/size
     accuracy = 100.0 * corrects/size
-    print('loss.data[0]: ', loss.data[0])
+    # print('loss.data[0]: ', loss.data[0])
     # print('corrects: ', corrects)
     # print('size: ', size)
-    print('avg_loss: ', avg_loss)
+    # print('avg_loss: ', avg_loss)
     # print('accuracy: ', accuracy)
     model.train()
     print('\nEvaluation - loss: {:.6f}  acc: {:.4f}%({}/{}) \n'.format(avg_loss, 
