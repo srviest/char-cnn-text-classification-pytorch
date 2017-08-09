@@ -40,7 +40,7 @@ def train(train_loader, dev_loader, model, args):
 
             loss.backward()
             optimizer.step()
-
+            print(torch.max(logit, 1)[1].view(target.size()).data)
             steps += 1
             if steps % args.log_interval == 0:
                 corrects = (torch.max(logit, 1)[1].view(target.size()).data == target.data).sum()
