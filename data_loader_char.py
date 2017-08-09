@@ -67,6 +67,7 @@ if __name__ == '__main__':
     
     label_data_path = '/Users/ychen/Documents/TextClfy/data/ag_news_csv/test.csv'
     alphabet_path = '/Users/ychen/Documents/TextClfy/alphabet.json'
+    
 
     train_dataset = AGNEWs(label_data_path, alphabet_path)
     train_loader = DataLoader(train_dataset, batch_size=64, num_workers=4, drop_last=False)
