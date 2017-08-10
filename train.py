@@ -36,8 +36,8 @@ def train(train_loader, dev_loader, model, args):
             optimizer.zero_grad()
             logit = model(inputs)
             
-            print('\nlogit')
-            print(logit)
+            # print('\nlogit')
+            # print(logit)
         
             # loss = F.nll_loss(logit, target)
             loss = F.cross_entropy(logit, target)
@@ -48,7 +48,7 @@ def train(train_loader, dev_loader, model, args):
             # print('target')
             # print(target)
             # print('predicate')
-            print(torch.max(logit, 1)[1].view(target.size()).data)
+            # print(torch.max(logit, 1)[1].view(target.size()).data)
             steps += 1
             if steps % args.log_interval == 0:
                 corrects = (torch.max(logit, 1)[1].view(target.size()).data == target.data).sum()
