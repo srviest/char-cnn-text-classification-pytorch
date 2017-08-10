@@ -70,6 +70,6 @@ class  CharCNN(nn.Module):
         x = self.fc2(x)
         print('FC2: ', x.size())
         x = self.fc3(x)
-        print('output: ', output.size())
+        print('x: ', x.size())
 
         return x
