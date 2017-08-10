@@ -35,8 +35,8 @@ def train(train_loader, dev_loader, model, args):
 
             optimizer.zero_grad()
             logit = model(inputs)
-            
-            # print('\nlogit')
+
+            # print('\nLogit')
             # print(logit)
         
             # loss = F.nll_loss(logit, target)
@@ -45,9 +45,9 @@ def train(train_loader, dev_loader, model, args):
             loss.backward()
             optimizer.step()
             
-            # print('target')
+            # print('\nTargets')
             # print(target)
-            print('predicate')
+            print('\nPredicates')
             print(torch.max(logit, 1)[1].view(target.size()).data)
             steps += 1
             if steps % args.log_interval == 0:
