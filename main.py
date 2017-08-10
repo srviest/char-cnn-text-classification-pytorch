@@ -23,12 +23,12 @@ parser.add_argument('-test-interval', type=int, default=100, help='how many step
 parser.add_argument('-save-interval', type=int, default=500, help='how many steps to wait before saving [default:500]')
 parser.add_argument('-save-dir', type=str, default='snapshot', help='where to save the snapshot')
 # data 
-parser.add_argument('--train_path', metavar='DIR',
+parser.add_argument('-train-path', metavar='DIR',
                     help='path to training data csv', default='data/ag_news_csv/train.csv')
-parser.add_argument('--val_path', metavar='DIR',
+parser.add_argument('-val-path', metavar='DIR',
                     help='path to validating data csv', default='data/ag_news_csv/test.csv')
 parser.add_argument('-shuffle', action='store_true', default=False, help='shuffle the data every epoch' )
-parser.add_argument('--alphabet_path', default='alphabet.json', help='Contains all characters for prediction')
+parser.add_argument('-alphabet-path', default='alphabet.json', help='Contains all characters for prediction')
 # model
 parser.add_argument('-dropout', type=float, default=0.5, help='the probability for dropout [default: 0.5]')
 parser.add_argument('-max-norm', type=float, default=3.0, help='l2 constraint of parameters [default: 3.0]')
