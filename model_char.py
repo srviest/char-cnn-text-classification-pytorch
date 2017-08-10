@@ -52,6 +52,7 @@ class  CharCNN(nn.Module):
 
     def forward(self, x):
         x = self.conv1(x)
+        print(x.size())
         x = self.conv2(x)
         x = self.conv3(x)
         x = self.conv4(x)

@@ -35,14 +35,16 @@ def train(train_loader, dev_loader, model, args):
 
             optimizer.zero_grad()
             logit = model(inputs)
+            
+            print('\nlogit')
+            print(logit)
         
             # loss = F.nll_loss(logit, target)
             loss = F.cross_entropy(logit, target)
 
             loss.backward()
             optimizer.step()
-            print('\nlogit')
-            print(logit)
+            
             # print('target')
             # print(target)
             # print('predicate')
