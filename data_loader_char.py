@@ -56,10 +56,10 @@ class AGNEWs(Dataset):
             for index_char, char in enumerate(sequence[::-1]):
                 if self.char2Index(char)!=-1:
                     X[index_seq][self.char2Index(char)][index_char] = 1
+        X = X.transpose(1,2)
         return X
 
     def char2Index(self, character):
-
         return self.alphabet.find(character)
 
 
@@ -67,20 +67,20 @@ if __name__ == '__main__':
     
     label_data_path = '/Users/ychen/Documents/TextClfy/data/ag_news_csv/test.csv'
     alphabet_path = '/Users/ychen/Documents/TextClfy/alphabet.json'
-    
+
 
     train_dataset = AGNEWs(label_data_path, alphabet_path)
     train_loader = DataLoader(train_dataset, batch_size=64, num_workers=4, drop_last=False)
     # print(len(train_loader))
     # print(train_loader.__len__())
 
-    size = 0
+    # size = 0
     for i_batch, sample_batched in enumerate(train_loader):
 
         # len(i_batch)
         # print(sample_batched['label'].size())
-        target = sample_batched['label']
-        print(len(target))
+        inputs = sample_batched['data']
+        print(inputs.size())
         # print('type(target): ', target)
         # target = target.float()
         # print('type(target): ', target)
@@ -90,8 +90,8 @@ if __name__ == '__main__':
         # print(sample_batched['label'])
         # print i_batch
         # observe 4th batch and stop.
-        size+=len(target)
+        # size+=len(target)
         # if i_batch == 0:
             # break
 
-    print(size)
+    # print(size)

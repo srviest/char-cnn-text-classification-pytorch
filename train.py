@@ -41,11 +41,11 @@ def train(train_loader, dev_loader, model, args):
 
             loss.backward()
             optimizer.step()
-            print('logit')
+            print('\nlogit')
             print(logit)
-            print('target')
-            print(target)
-            print('predicate')
+            # print('target')
+            # print(target)
+            # print('predicate')
             print(torch.max(logit, 1)[1].view(target.size()).data)
             steps += 1
             if steps % args.log_interval == 0:
