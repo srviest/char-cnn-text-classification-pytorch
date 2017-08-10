@@ -47,8 +47,8 @@ def train(train_loader, dev_loader, model, args):
             
             # print('target')
             # print(target)
-            # print('predicate')
-            # print(torch.max(logit, 1)[1].view(target.size()).data)
+            print('predicate')
+            print(torch.max(logit, 1)[1].view(target.size()).data)
             steps += 1
             if steps % args.log_interval == 0:
                 corrects = (torch.max(logit, 1)[1].view(target.size()).data == target.data).sum()
