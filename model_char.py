@@ -63,12 +63,13 @@ class  CharCNN(nn.Module):
 
     def forward(self, x):
         x = self.conv1(x)
-        print('\nx: ', x)
         x = self.conv2(x)
         x = self.conv3(x)
         x = self.conv4(x)
         x = self.conv5(x)
         x = self.conv6(x)
+        print('x.size()', x.size())
+        print('x.size(0)', x.size(0))
         x = x.view(x.size(0), -1)
         # print('Collapse x:, ', x.size())
         x = self.fc1(x)
