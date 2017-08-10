@@ -60,8 +60,8 @@ def train(train_loader, dev_loader, model, args):
                                                                              accuracy,
                                                                              corrects,
                                                                              args.batch_size))
-            if steps % args.test_interval == 0:
-                eval(dev_loader, model, args)
+            # if steps % args.test_interval == 0:
+            #     eval(dev_loader, model, args)
             if steps % args.save_interval == 0:
                 if not os.path.isdir(args.save_dir): os.makedirs(args.save_dir)
                 save_prefix = os.path.join(args.save_dir, 'snapshot')
@@ -83,9 +83,9 @@ def eval(data_loader, model, args):
             inputs, target = inputs.cuda(), target.cuda()
 
         inputs = autograd.Variable(inputs)
-        target = autograd.Variable(target)
+        targets = autograd.Variable(target)
         logit = model(inputs)
-        loss = F.cross_entropy(logit, target, size_average=False)
+        loss = F.cross_entropy(logit, targets, size_average=False)
         # loss = F.nll_loss(logit, target, size_average=False)
 
         correct = (torch.max(logit, 1)[1].view(target.size()).data == target.data).sum()
