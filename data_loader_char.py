@@ -1,4 +1,5 @@
 import csv
+import os.path as op
 import re
 import torch
 import codecs
@@ -21,11 +22,19 @@ class AGNEWs(Dataset):
             alphabet = str(''.join(json.load(alphabet_file)))
         self.alphabet = alphabet
         self.l0 = l0
-        self.label, self.data = self.load()
+        ts_data_path = op.join(op.dirname(path), op.basename(path).split('.')[0]+'_data.pth')
+        ts_labels_path = op.join(op.dirname(path), op.basename(path).split('.')[0]+'_labels.pth')
+        if op.exists(ts_data_path) and op.exists(ts_labels_path):
+            self.X = torch.load(ts_data_path)
+            self.y = torch.load(ts_labels_path)
+        else:
+            self.label, self.data = self.load()
+            self.y = torch.LongTensor(self.label)
+            self.X = self.oneHotEncode(self.data)
+            torch.save(ts_data_path, self.X)
+            torch.save(ts_labels_path, self.y)
 
-        self.y = torch.LongTensor(self.label)
-        self.X = self.oneHotEncode(self.data)
-        
+            
     def __len__(self):
         return len(self.label)
 
