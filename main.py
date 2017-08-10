@@ -3,12 +3,12 @@ import os
 import argparse
 import datetime
 import torch
-import torchtext.data as data
-import torchtext.datasets as datasets
+# import torchtext.data as data
+# import torchtext.datasets as datasets
 import model_char
 import model
 import train
-from data_loader_txt import mr
+# from data_loader_txt import mr
 from data_loader_char import AGNEWs
 from torch.utils.data import DataLoader
 
