@@ -46,8 +46,8 @@ class  CharCNN(nn.Module):
             nn.Dropout(p=0.5)
         )
         self.fc3 = nn.Sequential(
-            nn.Linear(1024, 4),
-            nn.LogSoftmax()
+            nn.Linear(1024, 4)
+            # nn.LogSoftmax()
         )
 
     def forward(self, x):
@@ -69,7 +69,7 @@ class  CharCNN(nn.Module):
         print('FC1: ', x.size())
         x = self.fc2(x)
         print('FC2: ', x.size())
-        output = self.fc3(x)
+        x = self.fc3(x)
         print('output: ', output.size())
 
-        return output
+        return x
