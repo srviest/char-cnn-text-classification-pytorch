@@ -76,7 +76,8 @@ class  CharCNN(nn.Module):
         x = self.conv1(x)
         print('x after conv1', x.size())
 
-        x = x.transpose([1,3])
+        x = x.transpose(1,3)
+        print('x after transpose', x.size())
 
         x = self.maxpool1(x)
         print('x after maxpool1', x.size())
