@@ -114,7 +114,7 @@ class  CharCNN(nn.Module):
 
         x = self.conv6(x)
         print('x after conv6', x.size())
-        
+
         x = x.transpose(1,3)
         print('x after transpose', x.size())
 
@@ -123,13 +123,17 @@ class  CharCNN(nn.Module):
         print('x after maxpool6', x.size())
 
         x = x.view(x.size(0), -1)
-        # print('Collapse x:, ', x.size())
+        print('Collapse x:, ', x.size())
+
         x = self.fc1(x)
-        # print('FC1: ', x.size())
+        print('FC1: ', x.size())
+
         x = self.fc2(x)
-        # print('FC2: ', x.size())
+        print('FC2: ', x.size())
+
         x = self.fc3(x)
-        # print('x: ', x.size())
+        print('x: ', x.size())
+        
         x = self.inference_log_softmax(x)
 
         return x
