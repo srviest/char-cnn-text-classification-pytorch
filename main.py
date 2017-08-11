@@ -81,7 +81,7 @@ for attr, value in sorted(args.__dict__.items()):
 # model
 if args.snapshot is None:
     num_features = len(train_dataset.alphabet)
-    cnn = model_char.CharCNN(num_features)
+    cnn = model_char_old.CharCNN(num_features)
     # cnn = model.CNN_Text(args)
     
 else :
