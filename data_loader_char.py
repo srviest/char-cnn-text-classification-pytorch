@@ -60,7 +60,8 @@ class AGNEWs(Dataset):
         return label, data
 
     def oneHotEncode(self, data):
-        X = torch.zeros(len(data), len(self.alphabet), self.l0)
+        # X = (batch, 70, sequence_length)
+        X = torch.zeros(len(data), len(self.alphabet), self.l0)  
         for index_seq, sequence in enumerate(data):
             for index_char, char in enumerate(sequence[::-1]):
                 if self.char2Index(char)!=-1:

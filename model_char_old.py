@@ -18,29 +18,29 @@ class  CharCNN(nn.Module):
         
         self.num_features = num_features
         self.conv1 = nn.Sequential(
-            nn.Conv2d(self.num_features, 256, kernel_size=7, stride=1),
+            nn.Conv1d(self.num_features, 256, kernel_size=7, stride=1),
             nn.ReLU(),
             nn.MaxPool1d(kernel_size=3, stride=3)
         )
         self.conv2 = nn.Sequential(
-            nn.Conv2d(256, 256, kernel_size=7, stride=1),
+            nn.Conv1d(256, 256, kernel_size=7, stride=1),
             nn.ReLU(),
             nn.MaxPool1d(kernel_size=3, stride=3)
         )
         self.conv3 = nn.Sequential(
-            nn.Conv2d(256, 256, kernel_size=3, stride=1),
+            nn.Conv1d(256, 256, kernel_size=3, stride=1),
             nn.ReLU()
         )
         self.conv4 = nn.Sequential(
-            nn.Conv2d(256, 256, kernel_size=3, stride=1),
+            nn.Conv1d(256, 256, kernel_size=3, stride=1),
             nn.ReLU()
         )
         self.conv5 = nn.Sequential(
-            nn.Conv2d(256, 256, kernel_size=3, stride=1),
+            nn.Conv1d(256, 256, kernel_size=3, stride=1),
             nn.ReLU()
         )
         self.conv6 = nn.Sequential(
-            nn.Conv2d(256, 256, kernel_size=3, stride=1),
+            nn.Conv1d(256, 256, kernel_size=3, stride=1),
             nn.ReLU(),
             nn.MaxPool1d(kernel_size=3, stride=3)
         )
@@ -62,7 +62,6 @@ class  CharCNN(nn.Module):
         self.inference_log_softmax = InferenceBatchLogSoftmax()
 
     def forward(self, x):
-        x = x.unsqueeze(1)
         x = self.conv1(x)
         x = self.conv2(x)
         x = self.conv3(x)
@@ -80,5 +79,7 @@ class  CharCNN(nn.Module):
         x = self.fc3(x)
         # print('x: ', x.size())
         x = self.inference_log_softmax(x)
+
+
 
         return x
