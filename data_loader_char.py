@@ -66,7 +66,7 @@ class AGNEWs(Dataset):
             for index_char, char in enumerate(sequence[::-1]):
                 if self.char2Index(char)!=-1:
                     X[index_seq][self.char2Index(char)][index_char] = 1
-        # X = X.transpose(1,2)
+        X = X.transpose(1,2)
         return X
 
     def char2Index(self, character):

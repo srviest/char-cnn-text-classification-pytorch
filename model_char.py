@@ -18,32 +18,40 @@ class  CharCNN(nn.Module):
         
         self.num_features = num_features
         self.conv1 = nn.Sequential(
-            nn.Conv2d(self.num_features, 256, kernel_size=7, stride=1),
-            nn.ReLU(),
-            nn.MaxPool1d(kernel_size=3, stride=3)
+            nn.Conv2d(1, 256, kernel_size=(7, self.num_features), stride=1),
+            nn.ReLU()
         )
+
+        self.maxpool1 = nn.MaxPool1d(kernel_size=3, stride=3)
+
         self.conv2 = nn.Sequential(
-            nn.Conv2d(256, 256, kernel_size=7, stride=1),
-            nn.ReLU(),
-            nn.MaxPool1d(kernel_size=3, stride=3)
+            nn.Conv2d(256, 256, kernel_size=(7, self.num_features), stride=1),
+            nn.ReLU()
         )
+        self.maxpool2 = nn.MaxPool1d(kernel_size=3, stride=3)
+
         self.conv3 = nn.Sequential(
-            nn.Conv2d(256, 256, kernel_size=3, stride=1),
+            nn.Conv2d(256, 256, kernel_size=(3, self.num_features), stride=1),
             nn.ReLU()
         )
+
         self.conv4 = nn.Sequential(
-            nn.Conv2d(256, 256, kernel_size=3, stride=1),
+            nn.Conv2d(256, 256, kernel_size=(3, self.num_features), stride=1),
             nn.ReLU()
         )
+
         self.conv5 = nn.Sequential(
-            nn.Conv2d(256, 256, kernel_size=3, stride=1),
+            nn.Conv2d(256, 256, kernel_size=(3, self.num_features), stride=1),
             nn.ReLU()
         )
+
         self.conv6 = nn.Sequential(
-            nn.Conv2d(256, 256, kernel_size=3, stride=1),
-            nn.ReLU(),
-            nn.MaxPool1d(kernel_size=3, stride=3)
+            nn.Conv2d(256, 256, kernel_size=(3, self.num_features), stride=1),
+            nn.ReLU()
         )
+
+        self.maxpool6 = nn.MaxPool1d(kernel_size=3, stride=3)
+
         self.fc1 = nn.Sequential(
             nn.Linear(8704, 1024),
             nn.ReLU(),
@@ -63,14 +71,35 @@ class  CharCNN(nn.Module):
 
     def forward(self, x):
         x = x.unsqueeze(1)
-        x = self.conv1(x)
-        x = self.conv2(x)
-        x = self.conv3(x)
-        x = self.conv4(x)
-        x = self.conv5(x)
-        x = self.conv6(x)
         print('x.size()', x.size())
-        print('x.size(0)', x.size(0))
+
+        x = self.conv1(x)
+        print('x after conv1', x.size())
+
+        x = self.maxpool1(x)
+        print('x after maxpool1', x.size())
+
+        x = self.conv2(x)
+        print('x after conv2', x.size())
+
+        x = self.maxpool2(x)
+        print('x after maxpool2', x.size())
+
+        x = self.conv3(x)
+        print('x after conv3', x.size())
+
+        x = self.conv4(x)
+        print('x after conv4', x.size())
+
+        x = self.conv5(x)
+        print('x after conv5', x.size())
+
+        x = self.conv6(x)
+        print('x after conv6', x.size())
+
+        x = self.maxpool6(x)
+        print('x after maxpool6', x.size())
+
         x = x.view(x.size(0), -1)
         # print('Collapse x:, ', x.size())
         x = self.fc1(x)
