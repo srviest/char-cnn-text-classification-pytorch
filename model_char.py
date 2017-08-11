@@ -22,13 +22,13 @@ class  CharCNN(nn.Module):
             nn.ReLU()
         )
 
-        self.maxpool1 = nn.MaxPool2d(kernel_size=(3, 256), stride=3)
+        self.maxpool1 = nn.MaxPool2d(kernel_size=(3, 1), stride=(3, 1)
 
         self.conv2 = nn.Sequential(
             nn.Conv2d(1, 256, kernel_size=(7, self.num_features), stride=1),
             nn.ReLU()
         )
-        self.maxpool2 = nn.MaxPool2d(kernel_size=(3, self.num_features), stride=3)
+        self.maxpool2 = nn.MaxPool2d(kernel_size=(3, 1), stride=(3, 1))
 
         self.conv3 = nn.Sequential(
             nn.Conv2d(1, 256, kernel_size=(3, self.num_features), stride=1),
@@ -50,7 +50,7 @@ class  CharCNN(nn.Module):
             nn.ReLU()
         )
 
-        self.maxpool6 = nn.MaxPool2d(kernel_size=(3, self.num_features), stride=3)
+        self.maxpool6 = nn.MaxPool2d(kernel_size=(3, 1), stride=(3, 1))
 
         self.fc1 = nn.Sequential(
             nn.Linear(8704, 1024),
