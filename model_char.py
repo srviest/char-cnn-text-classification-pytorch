@@ -70,70 +70,91 @@ class  CharCNN(nn.Module):
         self.inference_log_softmax = InferenceBatchLogSoftmax()
 
     def forward(self, x):
+        debug=False
         x = x.unsqueeze(1)
-        print('x.size()', x.size())
+        if debug:
+            print('x.size()', x.size())
 
         x = self.conv1(x)
-        print('x after conv1', x.size())
+        if debug:
+            print('x after conv1', x.size())
 
         x = x.transpose(1,3)
-        print('x after transpose', x.size())
+        if debug:
+            print('x after transpose', x.size())
 
         x = self.maxpool1(x)
-        print('x after maxpool1', x.size())
+        if debug:
+            print('x after maxpool1', x.size())
 
         x = self.conv2(x)
-        print('x after conv2', x.size())
+        if debug:
+            print('x after conv2', x.size())
 
         x = x.transpose(1,3)
-        print('x after transpose', x.size())
+        if debug:
+            print('x after transpose', x.size())
 
         x = self.maxpool2(x)
-        print('x after maxpool2', x.size())
+        if debug:
+            print('x after maxpool2', x.size())
 
         x = self.conv3(x)
-        print('x after conv3', x.size())
+        if debug:
+            print('x after conv3', x.size())
 
         x = x.transpose(1,3)
-        print('x after transpose', x.size())
+        if debug:
+            print('x after transpose', x.size())
 
 
         x = self.conv4(x)
-        print('x after conv4', x.size())
+        if debug:
+            print('x after conv4', x.size())
 
         x = x.transpose(1,3)
-        print('x after transpose', x.size())
+        if debug:
+            print('x after transpose', x.size())
 
 
         x = self.conv5(x)
-        print('x after conv5', x.size())
+        if debug:
+            print('x after conv5', x.size())
 
         x = x.transpose(1,3)
-        print('x after transpose', x.size())
+        if debug:
+            print('x after transpose', x.size())
 
 
         x = self.conv6(x)
-        print('x after conv6', x.size())
+        if debug:
+            print('x after conv6', x.size())
 
         x = x.transpose(1,3)
-        print('x after transpose', x.size())
+        if debug:
+            print('x after transpose', x.size())
 
 
         x = self.maxpool6(x)
-        print('x after maxpool6', x.size())
+        if debug:
+            print('x after maxpool6', x.size())
 
         x = x.view(x.size(0), -1)
-        print('Collapse x:, ', x.size())
+        if debug:
+            print('Collapse x:, ', x.size())
 
         x = self.fc1(x)
-        print('FC1: ', x.size())
+        if debug:
+            print('FC1: ', x.size())
 
         x = self.fc2(x)
-        print('FC2: ', x.size())
+        if debug:
+            print('FC2: ', x.size())
 
         x = self.fc3(x)
-        print('x: ', x.size())
-        
+        if debug:
+            print('x: ', x.size())
+
         x = self.inference_log_softmax(x)
 
         return x
