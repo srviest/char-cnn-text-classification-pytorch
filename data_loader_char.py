@@ -24,15 +24,15 @@ class AGNEWs(Dataset):
         self.l0 = l0
         ts_data_path = op.join(op.dirname(label_data_path), op.basename(label_data_path).split('.')[0]+'_data.pth')
         ts_labels_path = op.join(op.dirname(label_data_path), op.basename(label_data_path).split('.')[0]+'_labels.pth')
-        if op.exists(ts_data_path) and op.exists(ts_labels_path):
-            self.X = torch.load(ts_data_path)
-            self.y = torch.load(ts_labels_path)
-        else:
-            self.label, self.data = self.load()
-            self.y = torch.LongTensor(self.label)
-            self.X = self.oneHotEncode(self.data)
-            torch.save(ts_data_path, self.X)
-            torch.save(ts_labels_path, self.y)
+        # if op.exists(ts_data_path) and op.exists(ts_labels_path):
+        #     self.X = torch.load(ts_data_path)
+        #     self.y = torch.load(ts_labels_path)
+        # else:
+        self.label, self.data = self.load()
+        self.y = torch.LongTensor(self.label)
+        self.X = self.oneHotEncode(self.data)
+            # torch.save(ts_data_path, self.X)
+            # torch.save(ts_labels_path, self.y)
 
             
     def __len__(self):
