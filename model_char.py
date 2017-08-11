@@ -25,28 +25,28 @@ class  CharCNN(nn.Module):
         self.maxpool1 = nn.MaxPool2d(kernel_size=(3, 1), stride=(3, 1))
 
         self.conv2 = nn.Sequential(
-            nn.Conv2d(1, 256, kernel_size=(7, self.num_features), stride=1),
+            nn.Conv2d(1, 256, kernel_size=(7, 256), stride=1),
             nn.ReLU()
         )
         self.maxpool2 = nn.MaxPool2d(kernel_size=(3, 1), stride=(3, 1))
 
         self.conv3 = nn.Sequential(
-            nn.Conv2d(1, 256, kernel_size=(3, self.num_features), stride=1),
+            nn.Conv2d(1, 256, kernel_size=(3, 256), stride=1),
             nn.ReLU()
         )
 
         self.conv4 = nn.Sequential(
-            nn.Conv2d(1, 256, kernel_size=(3, self.num_features), stride=1),
+            nn.Conv2d(1, 256, kernel_size=(3, 256), stride=1),
             nn.ReLU()
         )
 
         self.conv5 = nn.Sequential(
-            nn.Conv2d(1, 256, kernel_size=(3, self.num_features), stride=1),
+            nn.Conv2d(1, 256, kernel_size=(3, 256), stride=1),
             nn.ReLU()
         )
 
         self.conv6 = nn.Sequential(
-            nn.Conv2d(1, 256, kernel_size=(3, self.num_features), stride=1),
+            nn.Conv2d(1, 256, kernel_size=(3, 256), stride=1),
             nn.ReLU()
         )
 
@@ -85,20 +85,39 @@ class  CharCNN(nn.Module):
         x = self.conv2(x)
         print('x after conv2', x.size())
 
+        x = x.transpose(1,3)
+        print('x after transpose', x.size())
+
         x = self.maxpool2(x)
         print('x after maxpool2', x.size())
 
         x = self.conv3(x)
         print('x after conv3', x.size())
 
+        x = x.transpose(1,3)
+        print('x after transpose', x.size())
+
+
         x = self.conv4(x)
         print('x after conv4', x.size())
+
+        x = x.transpose(1,3)
+        print('x after transpose', x.size())
+
 
         x = self.conv5(x)
         print('x after conv5', x.size())
 
+        x = x.transpose(1,3)
+        print('x after transpose', x.size())
+
+
         x = self.conv6(x)
         print('x after conv6', x.size())
+        
+        x = x.transpose(1,3)
+        print('x after transpose', x.size())
+
 
         x = self.maxpool6(x)
         print('x after maxpool6', x.size())
