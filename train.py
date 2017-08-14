@@ -40,8 +40,9 @@ def train(train_loader, dev_loader, model, args):
             # print('\nLogit')
             # print(logit)
         
+            loss = F.nll_loss(F.log_softmax(logit), target)
             # loss = F.nll_loss(logit, target)
-            loss = F.cross_entropy(logit, target)
+            # loss = F.cross_entropy(logit, target)
 
             loss.backward()
             optimizer.step()

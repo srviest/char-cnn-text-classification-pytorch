@@ -56,6 +56,7 @@ class AGNEWs(Dataset):
                 label.append(int(row[0]))
                 if lowercase:
                     txt = txt.lower()
+                
                 data.append(txt)
         return label, data
 
