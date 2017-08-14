@@ -49,7 +49,7 @@ def train(train_loader, dev_loader, model, args):
             # print('\nTargets')
             # print(target)
             print('\nTargets, Predicates')
-            print(torch.cat((target, torch.max(logit, 1)[1].view(target.size()).data), 1))
+            print(target, torch.max(logit, 1)[1].view(target.size()).data)
             steps += 1
             if steps % args.log_interval == 0:
                 corrects = (torch.max(logit, 1)[1].view(target.size()).data == target.data).sum()
