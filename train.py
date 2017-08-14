@@ -9,8 +9,8 @@ def train(train_loader, dev_loader, model, args):
     if args.cuda:
         model.cuda()
 
-    # optimizer = torch.optim.Adam(model.parameters(), lr=args.lr)
-    optimizer = torch.optim.SGD(model.parameters(), lr=args.lr, momentum=0.9)
+    optimizer = torch.optim.Adam(model.parameters(), lr=args.lr)
+    # optimizer = torch.optim.SGD(model.parameters(), lr=args.lr, momentum=0.9)
 
     model.train()
     for epoch in range(1, args.epochs+1):
