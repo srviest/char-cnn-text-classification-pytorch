@@ -36,6 +36,8 @@ def train(train_loader, dev_loader, model, args):
 
             optimizer.zero_grad()
             logit = model(inputs)
+            print('logit')
+            print(logit)
 
             # print('\nLogit')
             # print(logit)
