@@ -50,10 +50,12 @@ class AGNEWs(Dataset):
             rdr = csv.reader(f, delimiter=',', quotechar='"')
             # num_samples = sum(1 for row in rdr)
             for index, row in enumerate(rdr):
-                txt = ""
-                for s in row[1:]:
-                    txt = txt + " " + re.sub("^\s*(.-)\s*$", "%1", s).replace("\\n", "\n")
                 label.append(int(row[0]))
+                txt = ' '.join(row[1:])
+
+                # txt = ""
+                # for s in row[1:]:
+                #     txt = txt + " " + re.sub("^\s*(.-)\s*$", "%1", s).replace("\\n", "\n")
                 if lowercase:
                     txt = txt.lower()
                 
