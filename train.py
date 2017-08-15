@@ -39,8 +39,8 @@ def train(train_loader, dev_loader, model, args):
 
             
             logit = model(inputs)
-            print('\nlogit')
-            print(logit)
+            # print('\nlogit')
+            # print(logit)
 
             # print('\nLogit')
             # print(logit)

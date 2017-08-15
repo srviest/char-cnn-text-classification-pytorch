@@ -17,26 +17,26 @@ class  CharCNN(nn.Module):
         super(CharCNN, self).__init__()
         
         self.num_features = num_features
-        self.conv1 = nn.Conv1d(self.num_features, 256, kernel_size=7, stride=1, bias=False)
+        self.conv1 = nn.Conv1d(self.num_features, 256, kernel_size=7, stride=1)
         self.relu1 = nn.ReLU()
         self.pool1 = nn.MaxPool1d(kernel_size=3, stride=3)
             
-        self.conv2 = nn.Conv1d(256, 256, kernel_size=7, stride=1, bias=False)
+        self.conv2 = nn.Conv1d(256, 256, kernel_size=7, stride=1)
         self.relu2 = nn.ReLU()
         self.pool2 = nn.MaxPool1d(kernel_size=3, stride=3)
             
             
-        self.conv3 = nn.Conv1d(256, 256, kernel_size=3, stride=1, bias=False)
+        self.conv3 = nn.Conv1d(256, 256, kernel_size=3, stride=1)
         self.relu3 = nn.ReLU()
         
-        self.conv4 = nn.Conv1d(256, 256, kernel_size=3, stride=1, bias=False)
+        self.conv4 = nn.Conv1d(256, 256, kernel_size=3, stride=1)
         self.relu4= nn.ReLU()    
             
         
-        self.conv5 = nn.Conv1d(256, 256, kernel_size=3, stride=1, bias=False)
+        self.conv5 = nn.Conv1d(256, 256, kernel_size=3, stride=1)
         self.relu5= nn.ReLU()
         
-        self.conv6 = nn.Conv1d(256, 256, kernel_size=3, stride=1, bias=False)
+        self.conv6 = nn.Conv1d(256, 256, kernel_size=3, stride=1)
         self.relu6= nn.ReLU()
         self.pool6 = nn.MaxPool1d(kernel_size=3, stride=3)
         
