@@ -29,62 +29,65 @@ I haven't adjusted the hyper-parameters for SST seriously.
 or 
 
 ```
-python3 main.py -h
+python train.py -h
 ```
 
 You will get:
 
 ```
-CNN text classificer
+Character-level CNN text classifier
 
 optional arguments:
   -h, --help            show this help message and exit
-  -batch-size N         batch size for training [default: 50]
-  -lr LR                initial learning rate [default: 0.01]
-  -epochs N             number of epochs for train [default: 10]
-  -dropout              the probability for dropout [default: 0.5]
-  -max_norm MAX_NORM    l2 constraint of parameters
-  -cpu                  disable the gpu
-  -device DEVICE        device to use for iterate data
-  -embed-dim EMBED_DIM
-  -static               fix the embedding
-  -kernel-sizes KERNEL_SIZES
-                        Comma-separated kernel size to use for convolution
+  -lr LR                initial learning rate [default: 0.0005]
+  -epochs EPOCHS        number of epochs for train [default: 200]
+  -batch-size BATCH_SIZE
+                        batch size for training [default: 128]
+  -train-path DIR       path to training data csv
+  -val-path DIR         path to validating data csv
+  -alphabet-path ALPHABET_PATH
+                        Contains all characters for prediction
+  -shuffle              shuffle the data every epoch
+  -dropout DROPOUT      the probability for dropout [default: 0.5]
+  -max-norm MAX_NORM    l2 constraint of parameters [default: 3.0]
   -kernel-num KERNEL_NUM
                         number of each kind of kernel
-  -class-num CLASS_NUM  number of class
-  -shuffle              shuffle the data every epoch
-  -num-workers NUM_WORKERS
-                        how many subprocesses to use for data loading
-                        [default: 0]
+  -kernel-sizes KERNEL_SIZES
+                        comma-separated kernel size to use for convolution
+  --num_workers NUM_WORKERS
+                        Number of workers used in data-loading
+  -device DEVICE        device to use for iterate data, -1 mean cpu [default:
+                        -1]
+  -cuda                 enable the gpu
+  -verbose              Turn on progress tracking per iteration for debugging
+  -checkpoint           Enables checkpoint saving of model
+  -save-folder SAVE_FOLDER
+                        Location to save epoch models
   -log-interval LOG_INTERVAL
-                        how many batches to wait before logging training
-                        status
+                        how many steps to wait before logging training status
+                        [default: 1]
   -test-interval TEST_INTERVAL
-                        how many epochs to wait before testing
+                        how many steps to wait before testing [default: 100]
   -save-interval SAVE_INTERVAL
-                        how many epochs to wait before saving
-  -predict PREDICT      predict the sentence given
-  -snapshot SNAPSHOT    filename of model snapshot [default: None]
-  -save-dir SAVE_DIR    where to save the checkpoint
+                        how many epochs to wait before saving [default:20]
 ```
 
 ## Train
 ```
-./main.py
+./train.py
 ```
 You will get:
 
 ```
-Batch[100] - loss: 0.655424  acc: 59.3750%
-Evaluation - loss: 0.672396  acc: 57.6923%(615/1066) 
+Epoch[1] Batch[300] - loss: 1.044269  lr: 0.00050  acc: 42.9688%(55/128)
+Evaluation - loss: 0.016534  acc: 51.2712%(3872/7552)
 ```
 
 ## Test
 If you has construct you test set, you make testing like:
 
 ```
-/main.py -test -snapshot="./snapshot/2017-02-11_15-50-53/snapshot_steps1500.pt
+/test.py -test -model-path="./models/2017-02-11_15-50-53/snapshot_steps1500.pt
 ```
 The snapshot option means where your model load from. If you don't assign it, the model will start from scratch.
 
@@ -121,5 +124,5 @@ The snapshot option means where your model load from. If you don't assign it, th
 Your text must be separated by space, even punctuation.And, your text should longer then the max kernel size.
 
 ## Reference
-* [Convolutional Neural Networks for Sentence Classification](https://arxiv.org/abs/1408.5882)
+* Xiang Zhang, Junbo Zhao, Yann LeCun. [Character-level Convolutional Networks for Text Classification](http://arxiv.org/abs/1509.01626). Advances in Neural Information Processing Systems 28 (NIPS 2015)
 
