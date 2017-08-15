@@ -39,7 +39,7 @@ class  CharCNN(nn.Module):
             nn.ReLU()
         )
         self.conv6 = nn.Sequential(
-            nn.Conv1d(256, 256, kernel_size=3, stride=1),
+            nn.Conv1d(256, 256, kernel_size=3, stride=1, bias=False),
             nn.ReLU(),
             nn.MaxPool1d(kernel_size=3, stride=3)
         )
@@ -59,13 +59,13 @@ class  CharCNN(nn.Module):
 
     def forward(self, x):
         x = self.conv1(x)
-        print('x.size()', x.size())
+        # print('x.size()', x.size())
         x = self.relu1(x)
-        print('x.size()', x.size())
+        # print('x.size()', x.size())
         x = self.pool1(x)
-        print('x.size()', x.size())
+        # print('x.size()', x.size())
         x = self.conv2(x)
-        print('x.size()', x.size())
+        # print('x.size()', x.size())
         x = self.conv3(x)
         x = self.conv4(x)
         x = self.conv5(x)
