@@ -13,7 +13,7 @@ import torch.autograd as autograd
 import torch.nn.functional as F
 
 
-parser = argparse.ArgumentParser(description='Character level CNN text classificer')
+parser = argparse.ArgumentParser(description='Character level CNN text classifier')
 # learning
 parser.add_argument('-lr', type=float, default=0.001, help='initial learning rate [default: 0.001]')
 parser.add_argument('-epochs', type=int, default=200, help='number of epochs for train [default: 200]')
@@ -79,9 +79,10 @@ def train(train_loader, dev_loader, model, args):
                 corrects = (torch.max(logit, 1)[1].view(target.size()).data == target.data).sum()
                 accuracy = 100.0 * corrects/args.batch_size
                 sys.stdout.write(
-                    '\rEpoch[{}] Batch[{}] - loss: {:.6f}  acc: {:.4f}%({}/{})'.format(epoch,
+                    '\rEpoch[{}] Batch[{}] - loss: {:.6f}  lr: {:.5f}  acc: {:.4f}%({}/{})'.format(epoch,
                                                                              i_batch,
                                                                              loss.data[0],
+                                                                             args.lr,
                                                                              accuracy,
                                                                              corrects,
                                                                              args.batch_size))
