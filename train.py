@@ -35,7 +35,7 @@ parser.add_argument('--num_workers', default=4, type=int, help='Number of worker
 parser.add_argument('-device', type=int, default=-1, help='device to use for iterate data, -1 mean cpu [default: -1]')
 parser.add_argument('-cuda', action='store_true', default=True, help='enable the gpu' )
 # logging options
-parser.add_argument('-snapshot', type=str, default=None, help='filename of model snapshot [default: None]')
+parser.add_argument('-verbose', dest='verbose', action='store_true', default=False, help='Turn on progress tracking per iteration for debugging')
 parser.add_argument('-checkpoint', dest='checkpoint', default=True, action='store_true', help='Enables checkpoint saving of model')
 parser.add_argument('-save-folder', default='models/', help='Location to save epoch models')
 parser.add_argument('-log-interval',  type=int, default=1,   help='how many steps to wait before logging training status [default: 1]')
@@ -64,15 +64,16 @@ def train(train_loader, dev_loader, model, args):
             inputs = autograd.Variable(inputs)
             target = autograd.Variable(target)
             logit = model(inputs)
-            # print('\nLogit')
-            # print(logit)
+            
             loss = criterion(logit, target)
             optimizer.zero_grad()
             loss.backward()
             optimizer.step()
-            
-            print('\nTargets, Predicates')
-            print(torch.cat((target.unsqueeze(1), torch.unsqueeze(torch.max(logit, 1)[1].view(target.size()).data, 1)), 1))
+            if args.verbose:
+                print('\nTargets, Predicates')
+                print(torch.cat((target.unsqueeze(1), torch.unsqueeze(torch.max(logit, 1)[1].view(target.size()).data, 1)), 1))
+                print('\nLogit')
+                print(logit)
             i_batch += 1
             if i_batch % args.log_interval == 0:
                 corrects = (torch.max(logit, 1)[1].view(target.size()).data == target.data).sum()
@@ -153,7 +154,6 @@ def main():
         print("\t{}={}".format(attr.upper(), value))
 
     # model
-    
     cnn = model_CharCNN.CharCNN(args)
     
     # using GPU

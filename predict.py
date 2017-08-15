@@ -20,7 +20,6 @@ if args.predict is not None:
 def train(train_loader, dev_loader, model, args):
     if args.cuda:
         model.cuda()
-    print('lr: ', args.lr)
     optimizer = torch.optim.Adam(model.parameters(), lr=args.lr)
     # optimizer = torch.optim.SGD(model.parameters(), lr=args.lr, momentum=0.9)
 
@@ -73,9 +72,10 @@ def train(train_loader, dev_loader, model, args):
                 corrects = (torch.max(logit, 1)[1].view(target.size()).data == target.data).sum()
                 accuracy = 100.0 * corrects/args.batch_size
                 sys.stdout.write(
-                    '\rEpoch[{}] Batch[{}] - loss: {:.6f}  acc: {:.4f}%({}/{})'.format(epoch,
+                    '\rEpoch[{}] Batch[{}] - loss: {:.6f}  lr: {:.5f}  acc: {:.4f}%({}/{})'.format(epoch,
                                                                              steps,
                                                                              loss.data[0],
+                                                                             args.lr,
                                                                              accuracy,
                                                                              corrects,
                                                                              args.batch_size))
