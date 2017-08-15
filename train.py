@@ -3,6 +3,7 @@ import sys
 import torch
 import torch.autograd as autograd
 import torch.nn.functional as F
+from torch import nn
 
 
 def train(train_loader, dev_loader, model, args):
