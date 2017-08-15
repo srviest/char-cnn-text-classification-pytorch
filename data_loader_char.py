@@ -50,7 +50,7 @@ class AGNEWs(Dataset):
             rdr = csv.reader(f, delimiter=',', quotechar='"')
             # num_samples = sum(1 for row in rdr)
             for index, row in enumerate(rdr):
-                label.append(int(row[0]))
+                self.label.append(int(row[0]))
                 txt = ' '.join(row[1:])
 
                 # txt = ""
@@ -59,7 +59,7 @@ class AGNEWs(Dataset):
                 if lowercase:
                     txt = txt.lower()
                 
-                data.append(txt)
+                self.data.append(txt)
 
         # return label, data
 
