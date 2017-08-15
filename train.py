@@ -3,9 +3,9 @@ import os
 import argparse
 import datetime
 import torch
+import errno
 # import torchtext.data as data
 # import torchtext.datasets as datasets
-# import model_char_old
 import model_CharCNN
 # import model
 import train
