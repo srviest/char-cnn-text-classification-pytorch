@@ -28,9 +28,9 @@ class AGNEWs(Dataset):
         #     self.X = torch.load(ts_data_path)
         #     self.y = torch.load(ts_labels_path)
         # else:
-        self.label, self.data = self.load()
+        self.load()
         self.y = torch.LongTensor(self.label)
-        self.X = self.oneHotEncode(self.data)
+        self.oneHotEncode()
             # torch.save(ts_data_path, self.X)
             # torch.save(ts_labels_path, self.y)
 
@@ -44,8 +44,8 @@ class AGNEWs(Dataset):
         return sample
 
     def load(self, lowercase=True):
-        label = []
-        data = []
+        self.label = []
+        self.data = []
         with open(self.label_data_path, 'rb') as f:
             rdr = csv.reader(f, delimiter=',', quotechar='"')
             # num_samples = sum(1 for row in rdr)
@@ -60,17 +60,18 @@ class AGNEWs(Dataset):
                     txt = txt.lower()
                 
                 data.append(txt)
-        return label, data
 
-    def oneHotEncode(self, data):
+        # return label, data
+
+    def oneHotEncode(self):
+
         # X = (batch, 70, sequence_length)
-        X = torch.zeros(len(data), len(self.alphabet), self.l0)  
-        for index_seq, sequence in enumerate(data):
+        self.X = torch.zeros(len(self.data), len(self.alphabet), self.l0)  
+        for index_seq, sequence in enumerate(self.data):
             for index_char, char in enumerate(sequence[::-1]):
                 if self.char2Index(char)!=-1:
-                    X[index_seq][self.char2Index(char)][index_char] = 1.0
-        X = X.transpose(1,2)
-        return X
+                    self.X[index_seq][self.char2Index(char)][index_char] = 1.0
+        self.X = self.X.transpose(1,2)
 
     def char2Index(self, character):
         return self.alphabet.find(character)
