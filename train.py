@@ -9,7 +9,7 @@ from torch import nn
 def train(train_loader, dev_loader, model, args):
     if args.cuda:
         model.cuda()
-
+    print('lr: ', args.lr)
     optimizer = torch.optim.Adam(model.parameters(), lr=args.lr)
     # optimizer = torch.optim.SGD(model.parameters(), lr=args.lr, momentum=0.9)
 
@@ -55,7 +55,8 @@ def train(train_loader, dev_loader, model, args):
             # print('\nTargets')
             # print(target)
             print('\nTargets, Predicates')
-            print(target, torch.max(logit, 1)[1].view(target.size()).data)
+            print(torch.cat((target.unsqueeze(1), torch.unsqueeze(torch.max(logit, 1)[1].view(target.size()).data, 1)), 1))
+            # print(target, torch.max(logit, 1)[1].view(target.size()).data)
             steps += 1
             if steps % args.log_interval == 0:
                 corrects = (torch.max(logit, 1)[1].view(target.size()).data == target.data).sum()
