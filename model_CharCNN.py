@@ -4,7 +4,6 @@ import torch.nn.functional as F
 
 
 class  CharCNN(nn.Module):
-    
     def __init__(self, args):
         super(CharCNN, self).__init__()
         self.conv1 = nn.Sequential(
@@ -52,7 +51,7 @@ class  CharCNN(nn.Module):
             nn.ReLU(),
             nn.Dropout(p=args.dropout)
         )
-        
+
         self.fc3 = nn.Linear(1024, 4)
         self.softmax = nn.LogSoftmax()
 
