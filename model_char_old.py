@@ -17,7 +17,7 @@ class  CharCNN(nn.Module):
         super(CharCNN, self).__init__()
         
         self.num_features = num_features
-        self.conv1 = nn.Conv1d(self.num_features, 256, kernel_size=7, stride=1, bias=False),
+        self.conv1 = nn.Conv1d(self.num_features, 256, kernel_size=7, stride=1, bias=False)
         self.relu1 = nn.ReLU()
         self.pool1 = nn.MaxPool1d(kernel_size=3, stride=3)
             
