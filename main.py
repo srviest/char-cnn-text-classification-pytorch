@@ -16,7 +16,7 @@ from torch.utils.data import DataLoader
 
 parser = argparse.ArgumentParser(description='CNN text classificer')
 # learning
-parser.add_argument('-lr', type=float, default=0.005, help='initial learning rate [default: 0.01]')
+parser.add_argument('-lr', type=float, default=0.001, help='initial learning rate [default: 0.01]')
 parser.add_argument('-epochs', type=int, default=2500, help='number of epochs for train [default: 2500]')
 parser.add_argument('-batch-size', type=int, default=128, help='batch size for training [default: 128]')
 parser.add_argument('-log-interval',  type=int, default=1,   help='how many steps to wait before logging training status [default: 1]')
