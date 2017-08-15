@@ -80,7 +80,7 @@ def train(train_loader, dev_loader, model, args):
 def eval(data_loader, model, args):
     model.eval()
     corrects, avg_loss, size = 0, 0, 0
-    criterion = nn.NLLLoss(size_average=False)
+    # criterion = nn.NLLLoss(size_average=False)
     # for batch in data_loader:
     for i_batch, sample_batched in enumerate(data_loader):
         inputs = sample_batched['data']
@@ -92,11 +92,11 @@ def eval(data_loader, model, args):
             inputs, target = inputs.cuda(), target.cuda()
 
         inputs = autograd.Variable(inputs)
-        targets = autograd.Variable(target)
+        target = autograd.Variable(target)
         logit = model(inputs)
-        # loss = F.cross_entropy(logit, targets, size_average=False)
-        loss = criterion(logit, target)
-        # loss = F.nll_loss(logit, target, size_average=False)
+        # loss = F.cross_entropy(logit, target, size_average=False)
+        # loss = criterion(logit, target)
+        loss = F.nll_loss(logit, target, size_average=False)
 
         correct = (torch.max(logit, 1)[1].view(target.size()).data == target.data).sum()
         batch_loss = loss.data[0]
