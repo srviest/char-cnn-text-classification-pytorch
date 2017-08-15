@@ -2,12 +2,11 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
-class InferenceBatchLogSoftmax(nn.Module):
-    def forward(self, input_):
-        batch_size = input_.size()[0]
-        return torch.stack([F.log_softmax(input_[i]) for i in range(batch_size)], 0)
+# class InferenceBatchLogSoftmax(nn.Module):
+#     def forward(self, input_):
+#         batch_size = input_.size()[0]
+#         return torch.stack([F.log_softmax(input_[i]) for i in range(batch_size)], 0)
     
-
 
 class  CharCNN(nn.Module):
     
@@ -60,10 +59,9 @@ class  CharCNN(nn.Module):
             nn.ReLU(),
             nn.Dropout(p=0.5)
         )
-        self.fc3 = nn.Sequential(
-            nn.Linear(1024, 4)
+        self.fc3 =nn.Linear(1024, 4)
+        self.softmax = nn.LogSoftmax()
             # nn.LogSoftmax()
-        )
 
         # self.inference_log_softmax = InferenceBatchLogSoftmax()
 
@@ -153,6 +151,7 @@ class  CharCNN(nn.Module):
         if debug:
             print('x: ', x.size())
 
+        x = self.softmax(x)
         # x = self.inference_log_softmax(x)
 
         return x

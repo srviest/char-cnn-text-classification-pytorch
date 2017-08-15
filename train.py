@@ -13,6 +13,8 @@ def train(train_loader, dev_loader, model, args):
     # optimizer = torch.optim.SGD(model.parameters(), lr=args.lr, momentum=0.9)
 
     model.train()
+    criterion = nn.NLLLoss()
+
     for epoch in range(1, args.epochs+1):
         steps = 0
         for i_batch, sample_batched in enumerate(train_loader):
@@ -34,18 +36,18 @@ def train(train_loader, dev_loader, model, args):
             # print(inputs)
             target = autograd.Variable(target)
 
-            optimizer.zero_grad()
+            
             logit = model(inputs)
             print('logit')
             print(logit)
 
             # print('\nLogit')
             # print(logit)
-        
-            loss = F.nll_loss(F.log_softmax(logit), target)
+            loss = criterion(logit, target)
+            # loss = F.nll_loss(logit, target)
             # loss = F.nll_loss(logit, target)
             # loss = F.cross_entropy(logit, target)
-
+            optimizer.zero_grad()
             loss.backward()
             optimizer.step()
             
