@@ -28,19 +28,19 @@ class  CharCNN(nn.Module):
             nn.MaxPool1d(kernel_size=3, stride=3)
         )
         self.conv3 = nn.Sequential(
-            nn.Conv1d(256, 256, kernel_size=3, stride=1, bias=False),
+            nn.Conv1d(256, 256, kernel_size=3, stride=1),
             nn.ReLU()
         )
         self.conv4 = nn.Sequential(
-            nn.Conv1d(256, 256, kernel_size=3, stride=1, bias=False),
+            nn.Conv1d(256, 256, kernel_size=3, stride=1),
             nn.ReLU()
         )
         self.conv5 = nn.Sequential(
-            nn.Conv1d(256, 256, kernel_size=3, stride=1, bias=False),
+            nn.Conv1d(256, 256, kernel_size=3, stride=1),
             nn.ReLU()
         )
         self.conv6 = nn.Sequential(
-            nn.Conv1d(256, 256, kernel_size=3, stride=1, bias=False),
+            nn.Conv1d(256, 256, kernel_size=3, stride=1),
             nn.ReLU(),
             nn.MaxPool1d(kernel_size=3, stride=3)
         )
