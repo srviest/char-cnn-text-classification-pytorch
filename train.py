@@ -2,16 +2,14 @@
 import os
 import argparse
 import datetime
-import torch
 import errno
-# import torchtext.data as data
-# import torchtext.datasets as datasets
 import model_CharCNN
-# import model
-import train
-# from data_loader_txt import mr
-from data_loader_char import AGNEWs
+from data_loader import AGNEWs
 from torch.utils.data import DataLoader
+import torch
+from torch import nn
+import torch.autograd as autograd
+import torch.nn.functional as F
 
 
 parser = argparse.ArgumentParser(description='Character level CNN text classificer')
@@ -127,7 +125,7 @@ def main():
     # load training data
     print("\nLoading training data...")
     train_dataset = AGNEWs(label_data_path=args.train_path, alphabet_path=args.alphabet_path)
-    print("\nTransferring training data into iterator...")
+    print("Transferring training data into iterator...")
     train_loader = DataLoader(train_dataset, batch_size=args.batch_size, num_workers=args.num_workers, drop_last=True, shuffle=True)
     # feature length
     args.num_features = len(train_dataset.alphabet)
@@ -135,7 +133,7 @@ def main():
     # load developing data
     print("\nLoading developing data...")
     dev_dataset = AGNEWs(label_data_path=args.val_path, alphabet_path=args.alphabet_path)
-    print("\nTransferring developing data into iterator...")
+    print("Transferring developing data into iterator...")
     dev_loader = DataLoader(dev_dataset, batch_size=args.batch_size, num_workers=args.num_workers, drop_last=True)
     
     # make save folder
