@@ -1,33 +1,15 @@
 ## Introduction
-This is the implementation of Kim's [Convolutional Neural Networks for Sentence Classification](https://arxiv.org/abs/1408.5882) paper in PyTorch.
+This is the implementation of Zhang's [Character-level Convolutional Networks for Text Classification](http://arxiv.org/abs/1509.01626) paper in PyTorch.
 
-1. Kim's implementation of the model in Theano:
-[https://github.com/yoonkim/CNN_sentence](https://github.com/yoonkim/CNN_sentence)
-2. Denny Britz has an implementation in Tensorflow:
-[https://github.com/dennybritz/cnn-text-classification-tf](https://github.com/dennybritz/cnn-text-classification-tf)
+Zhang's implementation of the model in Torch:
+[https://github.com/zhangxiangxiao/Crepe](https://github.com/zhangxiangxiao/Crepe)
 
 ## Requirement
-* python 3
-* pytorch > 0.1
-* torchtext > 0.1
+* python 2
+* pytorch > 0.2
 * numpy
 
-## Result
-I just tried two dataset, MR and SST.
-
-|Dataset|Class Size|Best Result|Kim's Paper Result|
-|---|---|---|---|
-|MR|2|77.5%(CNN-rand-static)|76.1%(CNN-rand-nostatic)|
-|SST|5|37.2%(CNN-rand-static)|45.0%(CNN-rand-nostatic)|
-
-I haven't adjusted the hyper-parameters for SST seriously.
-
-## Usage
-```
-./main.py -h
-```
-or 
-
+## Basic Usage
 ```
 python train.py -h
 ```
@@ -87,21 +69,21 @@ Evaluation - loss: 0.016534  acc: 51.2712%(3872/7552)
 If you has construct you test set, you make testing like:
 
 ```
-/test.py -test -model-path="./models/2017-02-11_15-50-53/snapshot_steps1500.pt
+/test.py -test -model-path="models/CharCNN_10.pth.tar"
 ```
-The snapshot option means where your model load from. If you don't assign it, the model will start from scratch.
+The model-path option means where your model load from.
 
 ## Predict
 * **Example1**
 
 	```
-	./main.py -predict="Hello my dear , I love you so much ." \
-	          -snapshot="./snapshot/2017-02-11_15-50-53/snapshot_steps1500.pt" 
+	./predict.py -text="Hello my dear , I love you so much ." \
+	          -model-path="models/CharCNN_10.pth.tar"
 	```
 	You will get:
 	
 	```
-	Loading model from [./snapshot/2017-02-11_15-50-53/snapshot_steps1500.pt]...
+	Loading model from [models/CharCNN_10.pth.tar]...
 	
 	[Text]  Hello my dear , I love you so much .
 	[Label] positive
@@ -109,13 +91,13 @@ The snapshot option means where your model load from. If you don't assign it, th
 * **Example2**
 
 	```
-	./main.py -predict="You just make me so sad and I have to leave you ."\
-	          -snapshot="./snapshot/2017-02-11_15-50-53/snapshot_steps1500.pt" 
+	./predicy.py -text="You just make me so sad and I have to leave you ."\
+	          -model-path="models/CharCNN_10.pth.tar"
 	```
 	You will get:
 	
 	```
-	Loading model from [./snapshot/2017-02-11_15-50-53/snapshot_steps1500.pt]...
+	Loading model from [./models/CharCNN_10.pth.tar']...
 	
 	[Text]  You just make me so sad and I have to leave you .
 	[Label] negative

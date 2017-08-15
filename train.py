@@ -39,8 +39,8 @@ parser.add_argument('-verbose', dest='verbose', action='store_true', default=Fal
 parser.add_argument('-checkpoint', dest='checkpoint', default=True, action='store_true', help='Enables checkpoint saving of model')
 parser.add_argument('-save-folder', default='models/', help='Location to save epoch models')
 parser.add_argument('-log-interval',  type=int, default=1,   help='how many steps to wait before logging training status [default: 1]')
-parser.add_argument('-test-interval', type=int, default=100, help='how many steps to wait before testing [default: 100]')
-parser.add_argument('-save-interval', type=int, default=20, help='how many epochs to wait before saving [default:20]')
+parser.add_argument('-test-interval', type=int, default=100, help='how many steps to wait before vaidating [default: 100]')
+parser.add_argument('-save-interval', type=int, default=20, help='how many epochs to wait before saving [default:10]')
 
 def train(train_loader, dev_loader, model, args):
     if args.cuda:
