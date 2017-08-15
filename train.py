@@ -43,6 +43,83 @@ parser.add_argument('-log-interval',  type=int, default=1,   help='how many step
 parser.add_argument('-test-interval', type=int, default=100, help='how many steps to wait before testing [default: 100]')
 parser.add_argument('-save-interval', type=int, default=20, help='how many epochs to wait before saving [default:20]')
 
+def train(train_loader, dev_loader, model, args):
+    if args.cuda:
+        model.cuda()
+    print('lr: ', args.lr)
+    optimizer = torch.optim.Adam(model.parameters(), lr=args.lr)
+    # optimizer = torch.optim.SGD(model.parameters(), lr=args.lr, momentum=0.9)
+
+    model.train()
+    criterion = nn.NLLLoss()
+
+    for epoch in range(1, args.epochs+1):
+        for i_batch, sample_batched in enumerate(train_loader):
+            inputs = sample_batched['data']
+            target = sample_batched['label']
+            target.sub_(1)
+        
+            if args.cuda:
+                inputs, target = inputs.cuda(), target.cuda()
+
+            inputs = autograd.Variable(inputs)
+            target = autograd.Variable(target)
+            logit = model(inputs)
+            # print('\nLogit')
+            # print(logit)
+            loss = criterion(logit, target)
+            optimizer.zero_grad()
+            loss.backward()
+            optimizer.step()
+            
+            print('\nTargets, Predicates')
+            print(torch.cat((target.unsqueeze(1), torch.unsqueeze(torch.max(logit, 1)[1].view(target.size()).data, 1)), 1))
+            i_batch += 1
+            if i_batch % args.log_interval == 0:
+                corrects = (torch.max(logit, 1)[1].view(target.size()).data == target.data).sum()
+                accuracy = 100.0 * corrects/args.batch_size
+                sys.stdout.write(
+                    '\rEpoch[{}] Batch[{}] - loss: {:.6f}  acc: {:.4f}%({}/{})'.format(epoch,
+                                                                             i_batch,
+                                                                             loss.data[0],
+                                                                             accuracy,
+                                                                             corrects,
+                                                                             args.batch_size))
+            if i_batch % args.test_interval == 0:
+                eval(dev_loader, model, args)
+        if epoch % args.save_interval == 0:
+            file_path = '%s/CharCNN_%d.pth.tar' % (args.save_folder, epoch)
+            torch.save(model, file_path)
+
+def eval(data_loader, model, args):
+    model.eval()
+    corrects, avg_loss, size = 0, 0, 0
+    for i_batch, sample_batched in enumerate(data_loader):
+        inputs = sample_batched['data']
+        target = sample_batched['label']
+        target.sub_(1)
+
+        if args.cuda:
+            inputs, target = inputs.cuda(), target.cuda()
+
+        inputs = autograd.Variable(inputs)
+        target = autograd.Variable(target)
+        logit = model(inputs)
+        loss = F.nll_loss(logit, target, size_average=False)
+        correct = (torch.max(logit, 1)[1].view(target.size()).data == target.data).sum()
+        batch_loss = loss.data[0]
+        avg_loss += batch_loss
+        corrects += correct
+        size+=len(target)
+
+    avg_loss = loss.data[0]/size
+    accuracy = 100.0 * corrects/size
+    model.train()
+    print('\nEvaluation - loss: {:.6f}  acc: {:.4f}%({}/{}) \n'.format(avg_loss, 
+                                                                       accuracy, 
+                                                                       corrects, 
+                                                                       size))
+
 def main():
     # parse arguments
     args = parser.parse_args()
@@ -86,83 +163,6 @@ def main():
             
     # train 
     train(train_loader, dev_loader, cnn, args)
-
-    def train(train_loader, dev_loader, model, args):
-        if args.cuda:
-            model.cuda()
-        print('lr: ', args.lr)
-        optimizer = torch.optim.Adam(model.parameters(), lr=args.lr)
-        # optimizer = torch.optim.SGD(model.parameters(), lr=args.lr, momentum=0.9)
-
-        model.train()
-        criterion = nn.NLLLoss()
-
-        for epoch in range(1, args.epochs+1):
-            for i_batch, sample_batched in enumerate(train_loader):
-                inputs = sample_batched['data']
-                target = sample_batched['label']
-                target.sub_(1)
-            
-                if args.cuda:
-                    inputs, target = inputs.cuda(), target.cuda()
-
-                inputs = autograd.Variable(inputs)
-                target = autograd.Variable(target)
-                logit = model(inputs)
-                # print('\nLogit')
-                # print(logit)
-                loss = criterion(logit, target)
-                optimizer.zero_grad()
-                loss.backward()
-                optimizer.step()
-                
-                print('\nTargets, Predicates')
-                print(torch.cat((target.unsqueeze(1), torch.unsqueeze(torch.max(logit, 1)[1].view(target.size()).data, 1)), 1))
-                i_batch += 1
-                if i_batch % args.log_interval == 0:
-                    corrects = (torch.max(logit, 1)[1].view(target.size()).data == target.data).sum()
-                    accuracy = 100.0 * corrects/args.batch_size
-                    sys.stdout.write(
-                        '\rEpoch[{}] Batch[{}] - loss: {:.6f}  acc: {:.4f}%({}/{})'.format(epoch,
-                                                                                 i_batch,
-                                                                                 loss.data[0],
-                                                                                 accuracy,
-                                                                                 corrects,
-                                                                                 args.batch_size))
-                if i_batch % args.test_interval == 0:
-                    eval(dev_loader, model, args)
-            if epoch % args.save_interval == 0:
-                file_path = '%s/CharCNN_%d.pth.tar' % (args.save_folder, epoch)
-                torch.save(model, file_path)
-
-    def eval(data_loader, model, args):
-        model.eval()
-        corrects, avg_loss, size = 0, 0, 0
-        for i_batch, sample_batched in enumerate(data_loader):
-            inputs = sample_batched['data']
-            target = sample_batched['label']
-            target.sub_(1)
-
-            if args.cuda:
-                inputs, target = inputs.cuda(), target.cuda()
-
-            inputs = autograd.Variable(inputs)
-            target = autograd.Variable(target)
-            logit = model(inputs)
-            loss = F.nll_loss(logit, target, size_average=False)
-            correct = (torch.max(logit, 1)[1].view(target.size()).data == target.data).sum()
-            batch_loss = loss.data[0]
-            avg_loss += batch_loss
-            corrects += correct
-            size+=len(target)
-
-        avg_loss = loss.data[0]/size
-        accuracy = 100.0 * corrects/size
-        model.train()
-        print('\nEvaluation - loss: {:.6f}  acc: {:.4f}%({}/{}) \n'.format(avg_loss, 
-                                                                           accuracy, 
-                                                                           corrects, 
-                                                                           size))
 
 
 if __name__ == '__main__':
