@@ -2,6 +2,7 @@
 import os
 import argparse
 import datetime
+import sys
 import errno
 import model_CharCNN
 from data_loader import AGNEWs
