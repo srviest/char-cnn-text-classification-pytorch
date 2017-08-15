@@ -2,13 +2,13 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
-class InferenceBatchLogSoftmax(nn.Module):
-    def forward(self, input_):
-        if not self.training:
-            batch_size = input_.size()[0]
-            return torch.stack([F.log_softmax(input_[i]) for i in range(batch_size)], 0)
-        else:
-            return input_
+# class InferenceBatchLogSoftmax(nn.Module):
+#     def forward(self, input_):
+#         if not self.training:
+#             batch_size = input_.size()[0]
+#             return torch.stack([F.log_softmax(input_[i]) for i in range(batch_size)], 0)
+#         else:
+#             return input_
 
 
 class  CharCNN(nn.Module):
@@ -54,12 +54,9 @@ class  CharCNN(nn.Module):
             nn.ReLU(),
             nn.Dropout(p=0.5)
         )
-        self.fc3 = nn.Sequential(
-            nn.Linear(1024, 4)
-            # nn.LogSoftmax()
-        )
-
-        self.inference_log_softmax = InferenceBatchLogSoftmax()
+        self.fc3 = nn.Linear(1024, 4)
+        self.softmax = nn.LogSoftmax()
+        # self.inference_log_softmax = InferenceBatchLogSoftmax()
 
     def forward(self, x):
         x = self.conv1(x)
@@ -68,8 +65,8 @@ class  CharCNN(nn.Module):
         x = self.conv4(x)
         x = self.conv5(x)
         x = self.conv6(x)
-        print('x.size()', x.size())
-        print('x.size(0)', x.size(0))
+        # print('x.size()', x.size())
+        # print('x.size(0)', x.size(0))
         x = x.view(x.size(0), -1)
         # print('Collapse x:, ', x.size())
         x = self.fc1(x)
@@ -78,7 +75,9 @@ class  CharCNN(nn.Module):
         # print('FC2: ', x.size())
         x = self.fc3(x)
         # print('x: ', x.size())
-        x = self.inference_log_softmax(x)
+        # x = self.inference_log_softmax(x)
+
+        x = self.softmax(x)
 
 
 
