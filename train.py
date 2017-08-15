@@ -15,7 +15,7 @@ import torch.nn.functional as F
 
 parser = argparse.ArgumentParser(description='Character level CNN text classifier')
 # learning
-parser.add_argument('-lr', type=float, default=0.001, help='initial learning rate [default: 0.001]')
+parser.add_argument('-lr', type=float, default=0.0005, help='initial learning rate [default: 0.0005]')
 parser.add_argument('-epochs', type=int, default=200, help='number of epochs for train [default: 200]')
 parser.add_argument('-batch-size', type=int, default=128, help='batch size for training [default: 128]')
 # data 
@@ -45,7 +45,7 @@ parser.add_argument('-save-interval', type=int, default=20, help='how many epoch
 def train(train_loader, dev_loader, model, args):
     if args.cuda:
         model.cuda()
-    print('lr: ', args.lr)
+    
     optimizer = torch.optim.Adam(model.parameters(), lr=args.lr)
     # optimizer = torch.optim.SGD(model.parameters(), lr=args.lr, momentum=0.9)
 
