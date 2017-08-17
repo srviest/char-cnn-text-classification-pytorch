@@ -13,7 +13,7 @@ import torch.autograd as autograd
 import torch.nn.functional as F
 
 
-parser = argparse.ArgumentParser(description='Character level CNN text classifier')
+parser = argparse.ArgumentParser(description='Character level CNN text classifier training')
 # learning
 parser.add_argument('-lr', type=float, default=0.0005, help='initial learning rate [default: 0.0005]')
 parser.add_argument('-epochs', type=int, default=200, help='number of epochs for train [default: 200]')

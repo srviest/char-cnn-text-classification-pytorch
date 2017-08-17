@@ -1,9 +1,35 @@
 import os
+import argparse
+import datetime
 import sys
+import errno
+import model_CharCNN
+from data_loader import AGNEWs
+from torch.utils.data import DataLoader
 import torch
+from torch import nn
 import torch.autograd as autograd
 import torch.nn.functional as F
-from torch import nn
+
+
+parser = argparse.ArgumentParser(description='Character level CNN text classifier inference')
+# data 
+parser.add_argument('-val-path', metavar='DIR',
+                    help='path to validating data csv', default='data/ag_news_csv/test.csv')
+parser.add_argument('-alphabet-path', default='alphabet.json', help='Contains all characters for prediction')
+
+# device
+
+parser.add_argument('-device', type=int, default=-1, help='device to use for iterate data, -1 mean cpu [default: -1]')
+parser.add_argument('-cuda', action='store_true', default=True, help='enable the gpu' )
+# logging options
+parser.add_argument('-verbose', dest='verbose', action='store_true', default=False, help='Turn on progress tracking per iteration for debugging')
+parser.add_argument('-checkpoint', dest='checkpoint', default=True, action='store_true', help='Enables checkpoint saving of model')
+parser.add_argument('-save-folder', default='models/', help='Location to save epoch models')
+parser.add_argument('-log-interval',  type=int, default=1,   help='how many steps to wait before logging training status [default: 1]')
+parser.add_argument('-test-interval', type=int, default=100, help='how many steps to wait before vaidating [default: 100]')
+parser.add_argument('-save-interval', type=int, default=20, help='how many epochs to wait before saving [default:10]')
+
 
 else :
         print('\nLoading model from [%s]...' % args.snapshot)
@@ -17,75 +43,7 @@ if args.predict is not None:
         label = train.predict(args.predict, cnn, text_field, label_field)
         print('\n[Text]  {}[Label] {}\n'.format(args.predict, label))
 
-def train(train_loader, dev_loader, model, args):
-    if args.cuda:
-        model.cuda()
-    optimizer = torch.optim.Adam(model.parameters(), lr=args.lr)
-    # optimizer = torch.optim.SGD(model.parameters(), lr=args.lr, momentum=0.9)
 
-    model.train()
-    criterion = nn.NLLLoss()
-
-    for epoch in range(1, args.epochs+1):
-        steps = 0
-        for i_batch, sample_batched in enumerate(train_loader):
-            inputs = sample_batched['data']
-            target = sample_batched['label']
-            target.sub_(1)
-        # for batch in train_iter:
-            # inputs, target = batch.text, batch.label
-            # print('\n')
-            # print('inputs[:,0]', inputs[:,0])
-            # print('target', target)
-
-
-            # inputs.data.t_(), target.data.sub_(1)  # batch first, index align
-            if args.cuda:
-                inputs, target = inputs.cuda(), target.cuda()
-
-            inputs = autograd.Variable(inputs)
-            # print(inputs)
-            target = autograd.Variable(target)
-
-            
-            logit = model(inputs)
-            # print('\nlogit')
-            # print(logit)
-
-            # print('\nLogit')
-            # print(logit)
-            loss = criterion(logit, target)
-            # loss = F.nll_loss(logit, target)
-            # loss = F.nll_loss(logit, target)
-            # loss = F.cross_entropy(logit, target)
-            optimizer.zero_grad()
-            loss.backward()
-            optimizer.step()
-            
-            # print('\nTargets')
-            # print(target)
-            print('\nTargets, Predicates')
-            print(torch.cat((target.unsqueeze(1), torch.unsqueeze(torch.max(logit, 1)[1].view(target.size()).data, 1)), 1))
-            # print(target, torch.max(logit, 1)[1].view(target.size()).data)
-            steps += 1
-            if steps % args.log_interval == 0:
-                corrects = (torch.max(logit, 1)[1].view(target.size()).data == target.data).sum()
-                accuracy = 100.0 * corrects/args.batch_size
-                sys.stdout.write(
-                    '\rEpoch[{}] Batch[{}] - loss: {:.6f}  lr: {:.5f}  acc: {:.4f}%({}/{})'.format(epoch,
-                                                                             steps,
-                                                                             loss.data[0],
-                                                                             args.lr,
-                                                                             accuracy,
-                                                                             corrects,
-                                                                             args.batch_size))
-            if steps % args.test_interval == 0:
-                eval(dev_loader, model, args)
-            if steps % args.save_interval == 0:
-                if not os.path.isdir(args.save_dir): os.makedirs(args.save_dir)
-                save_prefix = os.path.join(args.save_dir, 'snapshot')
-                save_path = '{}_steps{}.pt'.format(save_prefix, steps)
-                torch.save(model, save_path)
 
 
 def eval(data_loader, model, args):

@@ -69,41 +69,10 @@ Evaluation - loss: 0.016534  acc: 51.2712%(3872/7552)
 If you has construct you test set, you make testing like:
 
 ```
-/test.py -test -model-path="models/CharCNN_10.pth.tar"
+/test.py -test-path="" -model-path="models/CharCNN_10.pth.tar"
 ```
 The model-path option means where your model load from.
 
-## Predict
-* **Example1**
-
-	```
-	./predict.py -text="Hello my dear , I love you so much ." \
-	          -model-path="models/CharCNN_10.pth.tar"
-	```
-	You will get:
-	
-	```
-	Loading model from [models/CharCNN_10.pth.tar]...
-	
-	[Text]  Hello my dear , I love you so much .
-	[Label] positive
-	```
-* **Example2**
-
-	```
-	./predicy.py -text="You just make me so sad and I have to leave you ."\
-	          -model-path="models/CharCNN_10.pth.tar"
-	```
-	You will get:
-	
-	```
-	Loading model from [./models/CharCNN_10.pth.tar']...
-	
-	[Text]  You just make me so sad and I have to leave you .
-	[Label] negative
-	```
-
-Your text must be separated by space, even punctuation.And, your text should longer then the max kernel size.
 
 ## Reference
 * Xiang Zhang, Junbo Zhao, Yann LeCun. [Character-level Convolutional Networks for Text Classification](http://arxiv.org/abs/1509.01626). Advances in Neural Information Processing Systems 28 (NIPS 2015)
