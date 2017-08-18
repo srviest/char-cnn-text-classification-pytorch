@@ -22,17 +22,21 @@ class AGNEWs(Dataset):
             alphabet = str(''.join(json.load(alphabet_file)))
         self.alphabet = alphabet
         self.l0 = l0
-        ts_data_path = op.join(op.dirname(label_data_path), op.basename(label_data_path).split('.')[0]+'_data.pth')
-        ts_labels_path = op.join(op.dirname(label_data_path), op.basename(label_data_path).split('.')[0]+'_labels.pth')
-        # if op.exists(ts_data_path) and op.exists(ts_labels_path):
-        #     self.X = torch.load(ts_data_path)
-        #     self.y = torch.load(ts_labels_path)
-        # else:
-        self.load()
-        self.y = torch.LongTensor(self.label)
-        self.oneHotEncode()
-            # torch.save(ts_data_path, self.X)
-            # torch.save(ts_labels_path, self.y)
+        ts_data_path = op.join(op.dirname(label_data_path), op.basename(label_data_path).split('.')[0]+'_X.tensor')
+        ts_labels_path = op.join(op.dirname(label_data_path), op.basename(label_data_path).split('.')[0]+'_y.tensor')
+        if op.exists(ts_data_path) and op.exists(ts_labels_path):
+            print("Load tensor of data...")
+            self.X = torch.load(ts_data_path)
+            print("Load tensor of labels...")
+            self.y = torch.load(ts_labels_path)
+        else:
+            self.load()
+            self.y = torch.LongTensor(self.label)
+            self.oneHotEncode()
+            print("Save tensor of data...")
+            torch.save(self.X, ts_data_path)
+            print("Save tensor of label...")
+            torch.save(self.y, ts_labels_path)
 
             
     def __len__(self):
@@ -71,7 +75,6 @@ class AGNEWs(Dataset):
             for index_char, char in enumerate(sequence[::-1]):
                 if self.char2Index(char)!=-1:
                     self.X[index_seq][self.char2Index(char)][index_char] = 1.0
-        # self.X = self.X.transpose(1,2)
 
     def char2Index(self, character):
         return self.alphabet.find(character)
