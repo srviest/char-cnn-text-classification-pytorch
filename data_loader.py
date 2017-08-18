@@ -22,6 +22,8 @@ class AGNEWs(Dataset):
             alphabet = str(''.join(json.load(alphabet_file)))
         self.alphabet = alphabet
         self.l0 = l0
+        self.load()
+
         ts_data_path = op.join(op.dirname(label_data_path), op.basename(label_data_path).split('.')[0]+'_X.tensor')
         ts_labels_path = op.join(op.dirname(label_data_path), op.basename(label_data_path).split('.')[0]+'_y.tensor')
         if op.exists(ts_data_path) and op.exists(ts_labels_path):
@@ -30,7 +32,6 @@ class AGNEWs(Dataset):
             print("Load tensor of labels...")
             self.y = torch.load(ts_labels_path)
         else:
-            self.load()
             self.y = torch.LongTensor(self.label)
             self.oneHotEncode()
             print("Save tensor of data...")
