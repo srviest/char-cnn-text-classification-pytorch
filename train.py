@@ -126,7 +126,7 @@ def eval(data_loader, model, args):
         predicates_all+=predicates_batch
         target_all+=target_batch
 
-    avg_loss = loss.data[0]/size
+    avg_loss = avg_loss/size
     accuracy = 100.0 * corrects/size
     model.train()
     
