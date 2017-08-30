@@ -44,9 +44,10 @@ class AGNEWs(Dataset):
         return len(self.label)
 
     def __getitem__(self, idx):
-        
-        sample = {'label': self.y[idx], 'data': self.X[idx]}
-        return sample
+        X = self.oneHotEncode(idx)
+        y = torch.LongTensor(self.label[idx])
+        return X, y
+
 
     def load(self, lowercase=True):
         self.label = []
@@ -57,25 +58,19 @@ class AGNEWs(Dataset):
             for index, row in enumerate(rdr):
                 self.label.append(int(row[0]))
                 txt = ' '.join(row[1:])
-
-                # txt = ""
-                # for s in row[1:]:
-                #     txt = txt + " " + re.sub("^\s*(.-)\s*$", "%1", s).replace("\\n", "\n")
                 if lowercase:
-                    txt = txt.lower()
-                
+                    txt = txt.lower()                
                 self.data.append(txt)
-
-        # return label, data
 
     def oneHotEncode(self):
 
         # X = (batch, 70, sequence_length)
-        self.X = torch.zeros(len(self.data), len(self.alphabet), self.l0)  
-        for index_seq, sequence in enumerate(self.data):
-            for index_char, char in enumerate(sequence[::-1]):
-                if self.char2Index(char)!=-1:
-                    self.X[index_seq][self.char2Index(char)][index_char] = 1.0
+        X = torch.zeros(len(self.alphabet), self.l0)
+        sequence = self.data[idx]
+        for index_char, char in enumerate(sequence[::-1]):
+            if self.char2Index(char)!=-1:
+                X[self.char2Index(char)][index_char] = 1.0
+        return X
 
     def char2Index(self, character):
         return self.alphabet.find(character)

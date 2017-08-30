@@ -59,9 +59,9 @@ def train(train_loader, dev_loader, model, args):
     criterion = nn.NLLLoss()
 
     for epoch in range(1, args.epochs+1):
-        for i_batch, data in enumerate(train_loader):
+        for i_batch, (data) in enumerate(train_loader):
 
-            inputs, target = data['data'], data['label'] 
+            inputs, target = data
             
             target.sub_(1)
         

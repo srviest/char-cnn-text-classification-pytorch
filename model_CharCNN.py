@@ -67,19 +67,11 @@ class  CharCNN(nn.Module):
         x = x.view(x.size(0), -1)
         # linear layer
         x = self.fc1(x)
-        print('after fc1')
-        print(x)
         # linear layer
         x = self.fc2(x)
-        print('after fc2')
-        print(x)
         # linear layer
         x = self.fc3(x)
-        print('after fc3')
-        print(x)
         # output layer
         x = self.softmax(x)
-        print('after log softmax')
-        print(x)
-
+        
         return x
