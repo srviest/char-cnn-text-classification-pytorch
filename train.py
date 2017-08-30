@@ -61,8 +61,7 @@ def train(train_loader, dev_loader, model, args):
     for epoch in range(1, args.epochs+1):
         for i_batch, (data) in enumerate(train_loader):
 
-            inputs, target = data
-            
+            inputs, target = data            
             target.sub_(1)
         
             if args.cuda:
@@ -70,22 +69,8 @@ def train(train_loader, dev_loader, model, args):
 
             inputs = autograd.Variable(inputs)
             target = autograd.Variable(target)
-
-            if args.verbose:
-                print('\ninputs')
-                print(inputs)
-                print('\ntarget')
-                print(target)
-
-                print('\ninputs.size()')
-                print(inputs.size())
-                print('\ntarget.size()')
-                print(target.size())
-
             logit = model(inputs)
-            print('\nLogit')
-            print(logit)
-            
+        
             loss = criterion(logit, target)
             optimizer.zero_grad()
             loss.backward()
