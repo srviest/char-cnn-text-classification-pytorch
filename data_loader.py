@@ -23,7 +23,7 @@ class AGNEWs(Dataset):
         self.alphabet = alphabet
         self.l0 = l0
         self.load()
-
+        self.y = torch.LongTensor(self.label)
         # ts_data_path = op.join(op.dirname(label_data_path), op.basename(label_data_path).split('.')[0]+'_X.tensor')
         # ts_labels_path = op.join(op.dirname(label_data_path), op.basename(label_data_path).split('.')[0]+'_y.tensor')
         # if op.exists(ts_data_path) and op.exists(ts_labels_path):
@@ -45,7 +45,7 @@ class AGNEWs(Dataset):
 
     def __getitem__(self, idx):
         X = self.oneHotEncode(idx)
-        y = torch.LongTensor([self.label[idx]])
+        y = self.y[idx]
         return X, y
 
 
