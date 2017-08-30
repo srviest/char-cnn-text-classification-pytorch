@@ -69,6 +69,18 @@ def train(train_loader, dev_loader, model, args):
 
             inputs = autograd.Variable(inputs)
             target = autograd.Variable(target)
+
+            if args.verbose:
+                print('\ninputs')
+                print(inputs)
+                print('\ntarget')
+                print(target)
+
+                print('\ninputs.size()')
+                print(inputs.size())
+                print('\ntarget.size()')
+                print(target.size())
+
             logit = model(inputs)
             
             loss = criterion(logit, target)
