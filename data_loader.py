@@ -24,21 +24,6 @@ class AGNEWs(Dataset):
         self.l0 = l0
         self.load()
         self.y = torch.LongTensor(self.label)
-        # ts_data_path = op.join(op.dirname(label_data_path), op.basename(label_data_path).split('.')[0]+'_X.tensor')
-        # ts_labels_path = op.join(op.dirname(label_data_path), op.basename(label_data_path).split('.')[0]+'_y.tensor')
-        # if op.exists(ts_data_path) and op.exists(ts_labels_path):
-        #     print("Load tensor of data...")
-        #     self.X = torch.load(ts_data_path)
-        #     print("Load tensor of labels...")
-        #     self.y = torch.load(ts_labels_path)
-        # else:
-        #     self.y = torch.LongTensor(self.label)
-        #     self.oneHotEncode()
-        #     print("Save tensor of data...")
-        #     torch.save(self.X, ts_data_path)
-        #     print("Save tensor of label...")
-        #     torch.save(self.y, ts_labels_path)
-
             
     def __len__(self):
         return len(self.label)
@@ -80,7 +65,6 @@ if __name__ == '__main__':
     label_data_path = '/Users/ychen/Documents/TextClfy/data/ag_news_csv/test.csv'
     alphabet_path = '/Users/ychen/Documents/TextClfy/alphabet.json'
 
-
     train_dataset = AGNEWs(label_data_path, alphabet_path)
     train_loader = DataLoader(train_dataset, batch_size=64, num_workers=4, drop_last=False)
     # print(len(train_loader))
@@ -94,16 +78,4 @@ if __name__ == '__main__':
         inputs = sample_batched['data']
         print(inputs.size())
         # print('type(target): ', target)
-        # target = target.float()
-        # print('type(target): ', target)
-        # inputs = autograd.Variable(inputs)
-        # print(inputs.data)
-        # print(sample_batched['data'][0])
-        # print(sample_batched['label'])
-        # print i_batch
-        # observe 4th batch and stop.
-        # size+=len(target)
-        # if i_batch == 0:
-            # break
-
-    # print(size)
+        

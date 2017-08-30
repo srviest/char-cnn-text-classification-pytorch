@@ -4,7 +4,7 @@ import argparse
 import datetime
 import sys
 import errno
-import model_CharCNN
+from model import CharCNN
 from data_loader import AGNEWs
 from metric import print_f_score
 from torch.utils.data import DataLoader
@@ -171,7 +171,7 @@ def main():
         print("\t{}:".format(attr.capitalize().replace('_', ' ')).ljust(25)+"{}".format(value))
 
     # model
-    cnn = model_CharCNN.CharCNN(args)
+    cnn = CharCNN(args)
     
     # using GPU
     if args.cuda:
