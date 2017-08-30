@@ -62,8 +62,7 @@ class AGNEWs(Dataset):
                     txt = txt.lower()                
                 self.data.append(txt)
 
-    def oneHotEncode(self):
-
+    def oneHotEncode(self, idx):
         # X = (batch, 70, sequence_length)
         X = torch.zeros(len(self.alphabet), self.l0)
         sequence = self.data[idx]
