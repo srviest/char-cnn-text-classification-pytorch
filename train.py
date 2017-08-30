@@ -25,7 +25,7 @@ parser.add_argument('--val-path', metavar='DIR',
                     help='path to validating data csv', default='data/ag_news_csv/test.csv')
 # model (text classifier)
 cnn = parser.add_argument_group('Model options')
-cnn.add_argument('--alphabet-path', default='labels_400k_new.json', help='Contains all characters for prediction')
+cnn.add_argument('--alphabet-path', default='alphabet.json', help='Contains all characters for prediction')
 cnn.add_argument('--l0', type=int, default=1014, help='maximum length of input sequence to CNNs [default: 1014]')
 cnn.add_argument('--shuffle', action='store_true', default=False, help='shuffle the data every epoch')
 cnn.add_argument('--dropout', type=float, default=0.5, help='the probability for dropout [default: 0.5]')
