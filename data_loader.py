@@ -44,7 +44,7 @@ class AGNEWs(Dataset):
         return len(self.label)
 
     def __getitem__(self, idx):
-        X = oneHotEncode(idx)
+        X = self.oneHotEncode(idx)
         y = torch.LongTensor(self.label[idx])
         return X, y
 
