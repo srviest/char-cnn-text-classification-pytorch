@@ -45,52 +45,6 @@ if args.predict is not None:
 
 
 
-
-def eval(data_loader, model, args):
-    model.eval()
-    corrects, avg_loss, size = 0, 0, 0
-    # criterion = nn.NLLLoss(size_average=False)
-    # for batch in data_loader:
-    for i_batch, sample_batched in enumerate(data_loader):
-        inputs = sample_batched['data']
-        target = sample_batched['label']
-        target.sub_(1)
-        # inputs, target = batch.text, batch.label
-        # inputs.data.t_(), target.data.sub_(1)  # batch first, index align
-        if args.cuda:
-            inputs, target = inputs.cuda(), target.cuda()
-
-        inputs = autograd.Variable(inputs)
-        target = autograd.Variable(target)
-        logit = model(inputs)
-        # loss = F.cross_entropy(logit, target, size_average=False)
-        # loss = criterion(logit, target)
-        loss = F.nll_loss(logit, target, size_average=False)
-
-        correct = (torch.max(logit, 1)[1].view(target.size()).data == target.data).sum()
-        batch_loss = loss.data[0]
-        # print('correct: ', correct)
-        # print('batch_loss: ', batch_loss)
-        avg_loss += batch_loss
-        corrects += correct
-        size+=len(target)
-
-    # print(len(target))
-    # size = len(data_loader)
-    avg_loss = loss.data[0]/size
-    accuracy = 100.0 * corrects/size
-    # print('loss.data[0]: ', loss.data[0])
-    # print('corrects: ', corrects)
-    # print('size: ', size)
-    # print('avg_loss: ', avg_loss)
-    # print('accuracy: ', accuracy)
-    model.train()
-    print('\nEvaluation - loss: {:.6f}  acc: {:.4f}%({}/{}) \n'.format(avg_loss, 
-                                                                       accuracy, 
-                                                                       corrects, 
-                                                                       size))
-
-
 def predict(text, model, text_field, label_feild):
     assert isinstance(text, str)
     model.eval()
@@ -103,3 +57,49 @@ def predict(text, model, text_field, label_feild):
     output = model(x)
     _, predicted = torch.max(output, 1)
     return label_feild.vocab.itos[predicted.data[0][0]+1]
+
+if __name__ == '__main__':
+    model = DeepSpeech.load_model(args.model_path, cuda=args.cuda)
+    model.eval()
+
+    labels = DeepSpeech.get_labels(model)
+    audio_conf = DeepSpeech.get_audio_conf(model)
+
+    if args.decoder == "beam":
+        scorer = None
+        if args.lm_path is not None:
+            scorer = KenLMScorer(labels, args.lm_path, args.trie_path)
+            scorer.set_lm_weight(args.lm_alpha)
+            scorer.set_word_weight(args.lm_beta1)
+            scorer.set_valid_word_weight(args.lm_beta2)
+        else:
+            scorer = Scorer()
+        decoder = BeamCTCDecoder(labels, scorer, beam_width=args.beam_width, top_paths=1, space_index=labels.index(' '), blank_index=labels.index('_'))
+    else:
+        decoder = GreedyDecoder(labels, space_index=labels.index(' '), blank_index=labels.index('\''))
+
+    audio_paths = []
+    if os.path.isdir(args.audio_path):
+        audio_paths = glob.glob(args.audio_path+os.sep+'*.wav')
+    else:
+        audio_paths.append(args.audio_path)
+
+    parser = SpectrogramParser(audio_conf, normalize=True)
+
+    for audio_path in audio_paths:
+        t0 = time.time()
+        spect = parser.parse_audio(audio_path).contiguous()
+        spect = spect.view(1, 1, spect.size(0), spect.size(1))
+        out = model(Variable(spect, volatile=True))
+        out = out.transpose(0, 1)  # TxNxH
+
+        if args.prob:
+            out_numpy = out.data.cpu().numpy()
+            t1 = time.time()
+            print(out_numpy)
+        else:
+            decoded_output = decoder.decode(out.data)
+            t1 = time.time()
+            print(decoded_output[0])
+            
+        print("Decoded {0:.2f} seconds of audio in {1:.2f} seconds\n".format(spect.size(3)*audio_conf['window_stride'], t1-t0))

@@ -12,35 +12,41 @@ from torch import nn
 import torch.autograd as autograd
 import torch.nn.functional as F
 
-
 parser = argparse.ArgumentParser(description='Character level CNN text classifier training')
 # learning
-parser.add_argument('-lr', type=float, default=0.0005, help='initial learning rate [default: 0.0005]')
-parser.add_argument('-epochs', type=int, default=200, help='number of epochs for train [default: 200]')
-parser.add_argument('-batch-size', type=int, default=128, help='batch size for training [default: 128]')
+learn = parser.add_argument_group('Learning options')
+learn.add_argument('--lr', type=float, default=0.0005, help='initial learning rate [default: 0.0005]')
+learn.add_argument('--epochs', type=int, default=200, help='number of epochs for train [default: 200]')
+learn.add_argument('--batch-size', type=int, default=20, help='batch size for training [default: 128]')
 # data 
-parser.add_argument('-train-path', metavar='DIR',
+parser.add_argument('--train-path', metavar='DIR',
                     help='path to training data csv', default='data/ag_news_csv/train.csv')
-parser.add_argument('-val-path', metavar='DIR',
+parser.add_argument('--val-path', metavar='DIR',
                     help='path to validating data csv', default='data/ag_news_csv/test.csv')
-parser.add_argument('-alphabet-path', default='alphabet.json', help='Contains all characters for prediction')
-parser.add_argument('-shuffle', action='store_true', default=False, help='shuffle the data every epoch')
-# model
-parser.add_argument('-dropout', type=float, default=0.5, help='the probability for dropout [default: 0.5]')
-parser.add_argument('-max-norm', type=float, default=3.0, help='l2 constraint of parameters [default: 3.0]')
+# model (text classifier)
+cnn = parser.add_argument_group('Model options')
+cnn.add_argument('--alphabet-path', default='labels_400k_new.json', help='Contains all characters for prediction')
+cnn.add_argument('--l0', type=int, default=1014, help='maximum length of input sequence to CNNs [default: 1014]')
+cnn.add_argument('--shuffle', action='store_true', default=False, help='shuffle the data every epoch')
+cnn.add_argument('--dropout', type=float, default=0.5, help='the probability for dropout [default: 0.5]')
+cnn.add_argument('--max-norm', type=float, default=3.0, help='l2 constraint of parameters [default: 3.0]')
 parser.add_argument('-kernel-num', type=int, default=100, help='number of each kind of kernel')
 parser.add_argument('-kernel-sizes', type=str, default='3,4,5', help='comma-separated kernel size to use for convolution')
 # device
-parser.add_argument('--num_workers', default=4, type=int, help='Number of workers used in data-loading')
-parser.add_argument('-device', type=int, default=-1, help='device to use for iterate data, -1 mean cpu [default: -1]')
-parser.add_argument('-cuda', action='store_true', default=True, help='enable the gpu' )
-# logging options
-parser.add_argument('-verbose', dest='verbose', action='store_true', default=False, help='Turn on progress tracking per iteration for debugging')
-parser.add_argument('-checkpoint', dest='checkpoint', default=True, action='store_true', help='Enables checkpoint saving of model')
-parser.add_argument('-save-folder', default='models/', help='Location to save epoch models')
-parser.add_argument('-log-interval',  type=int, default=1,   help='how many steps to wait before logging training status [default: 1]')
-parser.add_argument('-test-interval', type=int, default=100, help='how many steps to wait before vaidating [default: 100]')
-parser.add_argument('-save-interval', type=int, default=20, help='how many epochs to wait before saving [default:10]')
+device = parser.add_argument_group('Device options')
+device.add_argument('--num-workers', default=4, type=int, help='Number of workers used in data-loading')
+device.add_argument('--cuda', action='store_true', default=True, help='enable the gpu' )
+# experiment options
+experiment = parser.add_argument_group('Experiment options')
+experiment.add_argument('--verbose', dest='verbose', action='store_true', default=False, help='Turn on progress tracking per iteration for debugging')
+experiment.add_argument('--checkpoint', dest='checkpoint', default=True, action='store_true', help='Enables checkpoint saving of model')
+experiment.add_argument('--save-folder', default='models_A2I_test/', help='Location to save epoch models, training configurations and results.')
+experiment.add_argument('--log-config', default=True, action='store_true', help='Store experiment configuration')
+experiment.add_argument('--log-result', default=True, action='store_true', help='Store experiment result')
+experiment.add_argument('--log-interval',  type=int, default=1,   help='how many steps to wait before logging training status [default: 1]')
+experiment.add_argument('--test-interval', type=int, default=200, help='how many steps to wait before vaidating [default: 200]')
+experiment.add_argument('--save-interval', type=int, default=1, help='how many epochs to wait before saving [default:1]')
+
 
 def train(train_loader, dev_loader, model, args):
     if args.cuda:
@@ -53,9 +59,9 @@ def train(train_loader, dev_loader, model, args):
     criterion = nn.NLLLoss()
 
     for epoch in range(1, args.epochs+1):
-        for i_batch, sample_batched in enumerate(train_loader):
-            inputs = sample_batched['data']
-            target = sample_batched['label']
+        for i_batch, (data) in enumerate(train_loader):
+            inputs, target = data
+            
             target.sub_(1)
         
             if args.cuda:
@@ -95,9 +101,8 @@ def train(train_loader, dev_loader, model, args):
 def eval(data_loader, model, args):
     model.eval()
     corrects, avg_loss, size = 0, 0, 0
-    for i_batch, sample_batched in enumerate(data_loader):
-        inputs = sample_batched['data']
-        target = sample_batched['label']
+    for i_batch, (data) in enumerate(data_loader):
+        inputs, target = data
         target.sub_(1)
 
         if args.cuda:
