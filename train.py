@@ -40,7 +40,7 @@ device.add_argument('--cuda', action='store_true', default=True, help='enable th
 experiment = parser.add_argument_group('Experiment options')
 experiment.add_argument('--verbose', dest='verbose', action='store_true', default=False, help='Turn on progress tracking per iteration for debugging')
 experiment.add_argument('--checkpoint', dest='checkpoint', default=True, action='store_true', help='Enables checkpoint saving of model')
-experiment.add_argument('--save-folder', default='models_A2I_test/', help='Location to save epoch models, training configurations and results.')
+experiment.add_argument('--save-folder', default='models_CharCNN_test/', help='Location to save epoch models, training configurations and results.')
 experiment.add_argument('--log-config', default=True, action='store_true', help='Store experiment configuration')
 experiment.add_argument('--log-result', default=True, action='store_true', help='Store experiment result')
 experiment.add_argument('--log-interval',  type=int, default=1,   help='how many steps to wait before logging training status [default: 1]')
@@ -82,6 +82,8 @@ def train(train_loader, dev_loader, model, args):
                 print(target.size())
 
             logit = model(inputs)
+            print('\nLogit')
+            print(logit)
             
             loss = criterion(logit, target)
             optimizer.zero_grad()
@@ -108,7 +110,7 @@ def train(train_loader, dev_loader, model, args):
                 eval(dev_loader, model, args)
         if epoch % args.save_interval == 0:
             file_path = '%s/CharCNN_%d.pth.tar' % (args.save_folder, epoch)
-            torch.save(model, file_path)
+            torch.save(model.state_dict(), file_path)
 
 def eval(data_loader, model, args):
     model.eval()
