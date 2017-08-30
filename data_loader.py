@@ -24,20 +24,20 @@ class AGNEWs(Dataset):
         self.l0 = l0
         self.load()
 
-        ts_data_path = op.join(op.dirname(label_data_path), op.basename(label_data_path).split('.')[0]+'_X.tensor')
-        ts_labels_path = op.join(op.dirname(label_data_path), op.basename(label_data_path).split('.')[0]+'_y.tensor')
-        if op.exists(ts_data_path) and op.exists(ts_labels_path):
-            print("Load tensor of data...")
-            self.X = torch.load(ts_data_path)
-            print("Load tensor of labels...")
-            self.y = torch.load(ts_labels_path)
-        else:
-            self.y = torch.LongTensor(self.label)
-            self.oneHotEncode()
-            print("Save tensor of data...")
-            torch.save(self.X, ts_data_path)
-            print("Save tensor of label...")
-            torch.save(self.y, ts_labels_path)
+        # ts_data_path = op.join(op.dirname(label_data_path), op.basename(label_data_path).split('.')[0]+'_X.tensor')
+        # ts_labels_path = op.join(op.dirname(label_data_path), op.basename(label_data_path).split('.')[0]+'_y.tensor')
+        # if op.exists(ts_data_path) and op.exists(ts_labels_path):
+        #     print("Load tensor of data...")
+        #     self.X = torch.load(ts_data_path)
+        #     print("Load tensor of labels...")
+        #     self.y = torch.load(ts_labels_path)
+        # else:
+        #     self.y = torch.LongTensor(self.label)
+        #     self.oneHotEncode()
+        #     print("Save tensor of data...")
+        #     torch.save(self.X, ts_data_path)
+        #     print("Save tensor of label...")
+        #     torch.save(self.y, ts_labels_path)
 
             
     def __len__(self):
