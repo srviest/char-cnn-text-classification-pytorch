@@ -48,6 +48,8 @@ class AGNEWs(Dataset):
         y = torch.LongTensor(self.label[idx])
         print(X.size())
         print(y.size())
+        print(X)
+        print(y)
         return X, y
 
     def load(self, lowercase=True):
