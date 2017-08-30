@@ -157,7 +157,7 @@ def main():
     # configuration
     print("\nParameters:")
     for attr, value in sorted(args.__dict__.items()):
-        print("\t{}={}".format(attr.upper(), value))
+        print("\t{}:".format(attr.capitalize().replace('_', ' ')).ljust(25)+"{}".format(value))
 
     # model
     cnn = model_CharCNN.CharCNN(args)
