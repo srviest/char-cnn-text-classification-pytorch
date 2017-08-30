@@ -53,7 +53,7 @@ class  CharCNN(nn.Module):
         )
 
         self.fc3 = nn.Linear(1024, 4)
-        self.softmax = nn.LogSoftmax()
+        self.log_softmax = nn.LogSoftmax()
 
     def forward(self, x):
         x = self.conv1(x)
@@ -72,6 +72,6 @@ class  CharCNN(nn.Module):
         # linear layer
         x = self.fc3(x)
         # output layer
-        x = self.softmax(x)
+        x = self.log_softmax(x)
         
         return x

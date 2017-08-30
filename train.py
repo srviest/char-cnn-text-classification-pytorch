@@ -16,9 +16,9 @@ import torch.nn.functional as F
 parser = argparse.ArgumentParser(description='Character level CNN text classifier training')
 # learning
 learn = parser.add_argument_group('Learning options')
-learn.add_argument('--lr', type=float, default=0.0005, help='initial learning rate [default: 0.0005]')
+learn.add_argument('--lr', type=float, default=0.001, help='initial learning rate [default: 0.0005]')
 learn.add_argument('--epochs', type=int, default=200, help='number of epochs for train [default: 200]')
-learn.add_argument('--batch-size', type=int, default=20, help='batch size for training [default: 128]')
+learn.add_argument('--batch-size', type=int, default=128, help='batch size for training [default: 128]')
 # data 
 parser.add_argument('--train-path', metavar='DIR',
                     help='path to training data csv', default='data/ag_news_csv/train.csv')
