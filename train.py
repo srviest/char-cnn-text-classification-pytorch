@@ -6,6 +6,7 @@ import sys
 import errno
 import model_CharCNN
 from data_loader import AGNEWs
+from metric import print_f_score
 from torch.utils.data import DataLoader
 import torch
 from torch import nn
@@ -101,6 +102,7 @@ def train(train_loader, dev_loader, model, args):
 def eval(data_loader, model, args):
     model.eval()
     corrects, avg_loss, size = 0, 0, 0
+    predicates_all, target_all = [], []
     for i_batch, (data) in enumerate(data_loader):
         inputs, target = data
         target.sub_(1)
@@ -113,18 +115,27 @@ def eval(data_loader, model, args):
         logit = model(inputs)
         loss = F.nll_loss(logit, target, size_average=False)
         correct = (torch.max(logit, 1)[1].view(target.size()).data == target.data).sum()
+
+        predicates = torch.max(logit, 1)[1].view(target.size()).data
+        predicates_batch, target_batch = predicates.cpu().numpy().tolist(), target.data.cpu().numpy().tolist()
+
         batch_loss = loss.data[0]
         avg_loss += batch_loss
         corrects += correct
         size+=len(target)
+        predicates_all+=predicates_batch
+        target_all+=target_batch
 
     avg_loss = loss.data[0]/size
     accuracy = 100.0 * corrects/size
     model.train()
-    print('\nEvaluation - loss: {:.6f}  acc: {:.4f}%({}/{}) \n'.format(avg_loss, 
+    
+    print('\nEvaluation - loss: {:.6f}  acc: {:.4f}%({}/{}) '.format(avg_loss, 
                                                                        accuracy, 
                                                                        corrects, 
                                                                        size))
+    print_f_score(predicates_all, target_all)
+    print('\n')
 
 def main():
     # parse arguments
