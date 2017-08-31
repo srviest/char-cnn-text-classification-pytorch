@@ -73,6 +73,8 @@ def train(train_loader, dev_loader, model, args):
             logit = model(inputs)
         
             loss = criterion(logit, target)
+            print('loss')
+            print(loss)
             optimizer.zero_grad()
             loss.backward()
             optimizer.step()
@@ -120,9 +122,17 @@ def eval(data_loader, model, args):
         predicates_batch, target_batch = predicates.cpu().numpy().tolist(), target.data.cpu().numpy().tolist()
 
         batch_loss = loss.data[0]
+        print('loss.data[0]:')
+        print(loss.data[0])
         avg_loss += batch_loss
+        print('accumulated loss: ')
+        print(avg_loss)
         corrects += correct
+        print('number of data per batch:')
+        print(len(target))
         size+=len(target)
+        print('accumulated size: ')
+        print(size)
         predicates_all+=predicates_batch
         target_all+=target_batch
 
