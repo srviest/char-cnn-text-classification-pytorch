@@ -73,8 +73,6 @@ def train(train_loader, dev_loader, model, args):
             logit = model(inputs)
         
             loss = criterion(logit, target)
-            print('loss')
-            print(loss)
             optimizer.zero_grad()
             loss.backward()
             optimizer.step()
