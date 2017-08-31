@@ -8,6 +8,7 @@ Zhang's implementation of the model in Torch:
 * python 2
 * pytorch > 0.2
 * numpy
+* termcolor
 
 ## Basic Usage
 ```
