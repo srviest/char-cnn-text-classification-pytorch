@@ -102,7 +102,7 @@ def train(train_loader, dev_loader, model, args):
 
 def eval(data_loader, model, args):
     model.eval()
-    corrects, avg_loss, size = 0, 0, 0
+    corrects, avg_loss, accumulated_loss, size = 0, 0, 0, 0
     predicates_all, target_all = [], []
     for i_batch, (data) in enumerate(data_loader):
         inputs, target = data
