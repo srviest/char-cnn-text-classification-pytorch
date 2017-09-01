@@ -10,6 +10,8 @@ from metric import print_f_score
 from torch.utils.data import DataLoader
 import torch
 from torch import nn
+import torch.optim
+import torch.optim.lr_scheduler
 import torch.autograd as autograd
 import torch.nn.functional as F
 
@@ -76,8 +78,6 @@ def train(train_loader, dev_loader, model, args):
             loss = F.nll_loss(logit, target)
             optimizer.zero_grad()
             loss.backward()
-            print('\nCurrent lr:')
-            print(optimizer.state_dict()['param_groups'][0]['lr'])
             optimizer.step()
             if args.verbose:
                 print('\nTargets, Predicates')
