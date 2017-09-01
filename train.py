@@ -97,7 +97,7 @@ def train(train_loader, dev_loader, model, args):
                                                                              corrects,
                                                                              args.batch_size))
             if i_batch % args.test_interval == 0:
-                val_loss = eval(dev_loader, model, args)
+                val_loss = eval(dev_loader, model, epoch, i_batch, args)
                 if args.adaptive_lr:
                     scheduler.step(val_loss)
                     print('Reduce learning rate to: {lr:.6f}'.format(optimizer.state_dict()['param_groups'][0]['lr']))
@@ -105,7 +105,7 @@ def train(train_loader, dev_loader, model, args):
             file_path = '%s/CharCNN_%d.pth.tar' % (args.save_folder, epoch)
             torch.save(model.state_dict(), file_path)
 
-def eval(data_loader, model, args):
+def eval(data_loader, model, epoch_train, batch_train, args):
     model.eval()
     corrects, avg_loss, accumulated_loss, size = 0, 0, 0, 0
     predicates_all, target_all = [], []
