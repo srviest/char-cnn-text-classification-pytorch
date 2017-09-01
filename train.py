@@ -100,8 +100,7 @@ def train(train_loader, dev_loader, model, args):
                 val_loss = eval(dev_loader, model, epoch, i_batch, args)
                 if args.adaptive_lr:
                     scheduler.step(val_loss)
-                    clr = optimizer.state_dict()['param_groups'][0]['lr']
-                    print('Reduce learning rate to: {lr:.6f}'.format(clr))
+                    print('Reduce learning rate to: {lr:.6f}'.format(lr=optimizer.state_dict()['param_groups'][0]['lr']))
         if epoch % args.save_interval == 0:
             file_path = '%s/CharCNN_%d.pth.tar' % (args.save_folder, epoch)
             torch.save(model.state_dict(), file_path)
