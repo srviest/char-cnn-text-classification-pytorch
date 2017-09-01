@@ -59,7 +59,7 @@ def train(train_loader, dev_loader, model, args):
     # optimizer = torch.optim.SGD(model.parameters(), lr=args.lr, momentum=0.9)
 
     if args.adaptive_lr:
-        scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer, factor=0.5, patience=3, verbose=True)
+        scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer, factor=0.5, patience=10, verbose=True)
 
     model.train()
 
