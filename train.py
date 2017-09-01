@@ -52,15 +52,16 @@ experiment.add_argument('--save-interval', type=int, default=1, help='how many e
 def train(train_loader, dev_loader, model, args):
     if args.cuda:
         model.cuda()
-    
+
     optimizer = torch.optim.Adam(model.parameters(), lr=args.lr)
     # optimizer = torch.optim.SGD(model.parameters(), lr=args.lr, momentum=0.9)
+
+    if args.adaptive_lr:
+        scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer, factor=0.5, patience=3, verbose=True)
 
     model.train()
 
     for epoch in range(1, args.epochs+1):
-        print('Current lr:')
-        print(optimizer.state_dict()['param_groups'][0]['lr'])
         for i_batch, (data) in enumerate(train_loader):
 
             inputs, target = data            
@@ -75,7 +76,7 @@ def train(train_loader, dev_loader, model, args):
             loss = F.nll_loss(logit, target)
             optimizer.zero_grad()
             loss.backward()
-            print('Current lr:')
+            print('\nCurrent lr:')
             print(optimizer.state_dict()['param_groups'][0]['lr'])
             optimizer.step()
             if args.verbose:
@@ -96,7 +97,10 @@ def train(train_loader, dev_loader, model, args):
                                                                              corrects,
                                                                              args.batch_size))
             if i_batch % args.test_interval == 0:
-                eval(dev_loader, model, args)
+                val_loss = eval(dev_loader, model, args)
+                if args.adaptive_lr:
+                    scheduler.step(val_loss)
+
         if epoch % args.save_interval == 0:
             file_path = '%s/CharCNN_%d.pth.tar' % (args.save_folder, epoch)
             torch.save(model.state_dict(), file_path)
@@ -132,6 +136,8 @@ def eval(data_loader, model, args):
                                                                        size))
     print_f_score(predicates_all, target_all)
     print('\n')
+
+    return avg_loss
 
 def main():
     # parse arguments
