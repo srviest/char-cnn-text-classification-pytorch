@@ -19,6 +19,7 @@ learn = parser.add_argument_group('Learning options')
 learn.add_argument('--lr', type=float, default=0.001, help='initial learning rate [default: 0.0005]')
 learn.add_argument('--epochs', type=int, default=200, help='number of epochs for train [default: 200]')
 learn.add_argument('--batch-size', type=int, default=128, help='batch size for training [default: 128]')
+learn.add_argument('--adaptive-lr', action='store_true', default=False, help='use dynamic learning schedule.')
 # data 
 parser.add_argument('--train-path', metavar='DIR',
                     help='path to training data csv', default='data/ag_news_csv/train.csv')
@@ -30,7 +31,6 @@ cnn.add_argument('--alphabet-path', default='alphabet.json', help='Contains all 
 cnn.add_argument('--l0', type=int, default=1014, help='maximum length of input sequence to CNNs [default: 1014]')
 cnn.add_argument('--shuffle', action='store_true', default=False, help='shuffle the data every epoch')
 cnn.add_argument('--dropout', type=float, default=0.5, help='the probability for dropout [default: 0.5]')
-cnn.add_argument('--max-norm', type=float, default=3.0, help='l2 constraint of parameters [default: 3.0]')
 parser.add_argument('-kernel-num', type=int, default=100, help='number of each kind of kernel')
 parser.add_argument('-kernel-sizes', type=str, default='3,4,5', help='comma-separated kernel size to use for convolution')
 # device
@@ -55,9 +55,10 @@ def train(train_loader, dev_loader, model, args):
     
     optimizer = torch.optim.Adam(model.parameters(), lr=args.lr)
     # optimizer = torch.optim.SGD(model.parameters(), lr=args.lr, momentum=0.9)
+    
 
     model.train()
-    criterion = nn.NLLLoss()
+    # criterion = nn.NLLLoss()
 
     for epoch in range(1, args.epochs+1):
         for i_batch, (data) in enumerate(train_loader):
@@ -71,8 +72,8 @@ def train(train_loader, dev_loader, model, args):
             inputs = autograd.Variable(inputs)
             target = autograd.Variable(target)
             logit = model(inputs)
-        
-            loss = criterion(logit, target)
+            loss = F.nll_loss(logit, target)
+            # loss = criterion(logit, target)
             optimizer.zero_grad()
             loss.backward()
             optimizer.step()
@@ -113,21 +114,19 @@ def eval(data_loader, model, args):
         inputs = autograd.Variable(inputs)
         target = autograd.Variable(target)
         logit = model(inputs)
-        loss = F.nll_loss(logit, target, size_average=False)
+        accumulated_loss += F.nll_loss(logit, target, size_average=False).data[0]
         correct = (torch.max(logit, 1)[1].view(target.size()).data == target.data).sum()
 
         predicates = torch.max(logit, 1)[1].view(target.size()).data
         predicates_batch, target_batch = predicates.cpu().numpy().tolist(), target.data.cpu().numpy().tolist()
 
-        batch_loss = loss.data[0]
-        avg_loss += batch_loss
         corrects += correct
         size+=len(target)
 
         predicates_all+=predicates_batch
         target_all+=target_batch
 
-    avg_loss = avg_loss/size
+    avg_loss = accumulated_loss/size
     accuracy = 100.0 * corrects/size
     model.train()
     
