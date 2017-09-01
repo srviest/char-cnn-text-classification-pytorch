@@ -55,10 +55,8 @@ def train(train_loader, dev_loader, model, args):
     
     optimizer = torch.optim.Adam(model.parameters(), lr=args.lr)
     # optimizer = torch.optim.SGD(model.parameters(), lr=args.lr, momentum=0.9)
-    
 
     model.train()
-    # criterion = nn.NLLLoss()
 
     for epoch in range(1, args.epochs+1):
         for i_batch, (data) in enumerate(train_loader):
@@ -73,7 +71,6 @@ def train(train_loader, dev_loader, model, args):
             target = autograd.Variable(target)
             logit = model(inputs)
             loss = F.nll_loss(logit, target)
-            # loss = criterion(logit, target)
             optimizer.zero_grad()
             loss.backward()
             optimizer.step()
@@ -115,14 +112,9 @@ def eval(data_loader, model, args):
         target = autograd.Variable(target)
         logit = model(inputs)
         accumulated_loss += F.nll_loss(logit, target, size_average=False).data[0]
-        # correct = (torch.max(logit, 1)[1].view(target.size()).data == target.data).sum()
-
         predicates = torch.max(logit, 1)[1].view(target.size()).data
-        # predicates_batch, target_batch = predicates.cpu().numpy().tolist(), target.data.cpu().numpy().tolist()
-
         corrects += (torch.max(logit, 1)[1].view(target.size()).data == target.data).sum()
         size+=len(target)
-
         predicates_all+=predicates.cpu().numpy().tolist()
         target_all+=target.data.cpu().numpy().tolist()
 
