@@ -92,7 +92,7 @@ def train(train_loader, dev_loader, model, args):
                     '\rEpoch[{}] Batch[{}] - loss: {:.6f}  lr: {:.5f}  acc: {:.3f}%({}/{})'.format(epoch,
                                                                              i_batch,
                                                                              loss.data[0],
-                                                                             args.lr,
+                                                                             optimizer.state_dict()['param_groups'][0]['lr'],
                                                                              accuracy,
                                                                              corrects,
                                                                              args.batch_size))
@@ -100,7 +100,7 @@ def train(train_loader, dev_loader, model, args):
                 val_loss = eval(dev_loader, model, args)
                 if args.adaptive_lr:
                     scheduler.step(val_loss)
-
+                    print('Reduce learning rate to: {lr:.6f}'.format(optimizer.state_dict()['param_groups'][0]['lr']))
         if epoch % args.save_interval == 0:
             file_path = '%s/CharCNN_%d.pth.tar' % (args.save_folder, epoch)
             torch.save(model.state_dict(), file_path)
@@ -137,6 +137,10 @@ def eval(data_loader, model, args):
     print_f_score(predicates_all, target_all)
     print('\n')
 
+    if args.log_result:
+        with open(os.path.join(args.save_folder,'result.csv'), 'a') as r:
+            r.write('\n{:d},{:d},{:.5f},{:.2f},{:f}'.format(epoch_train, batch_train, avg_loss, accuracy, args.lr))
+
     return avg_loss
 
 def main():
@@ -172,6 +176,10 @@ def main():
     for attr, value in sorted(args.__dict__.items()):
         print("\t{}:".format(attr.capitalize().replace('_', ' ')).ljust(25)+"{}".format(value))
 
+    # log result
+    if args.log_result:
+        with open(os.path.join(args.save_folder,'result.csv'), 'w') as r:
+            r.write('{:s},{:s},{:s},{:s},{:s}'.format('epoch', 'batch', 'loss', 'acc', 'lr'))
     # model
     cnn = CharCNN(args)
     
