@@ -59,6 +59,8 @@ def train(train_loader, dev_loader, model, args):
     model.train()
 
     for epoch in range(1, args.epochs+1):
+        print('Current lr:')
+        print(optimizer.state_dict()['param_groups'][0]['lr'])
         for i_batch, (data) in enumerate(train_loader):
 
             inputs, target = data            
