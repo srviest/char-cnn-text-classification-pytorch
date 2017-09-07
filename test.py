@@ -62,6 +62,7 @@ if __name__ == '__main__':
     print('\nTesting...')
     for i_batch, (data) in enumerate(test_loader):
         inputs, target = data
+        target.sub_(1)
         size+=len(target)
         if args.cuda:
             inputs, target = inputs.cuda(), target.cuda()
