@@ -225,7 +225,24 @@ def main():
     dev_dataset = AGNEWs(label_data_path=args.val_path, alphabet_path=args.alphabet_path)
     print("Transferring developing data into iterator...")
     dev_loader = DataLoader(dev_dataset, batch_size=args.batch_size, num_workers=args.num_workers, drop_last=True)
+
+    class_weight, num_class_train = train_dataset.get_class_weight()
+    _, num_class_dev = dev_dataset.get_class_weight()
     
+    # when you have an unbalanced training set
+    if args.class_weight!=None:
+        args.class_weight = torch.FloatTensor(class_weight).sqrt_()
+        if args.cuda:
+            args.class_weight = args.class_weight.cuda()
+
+    print('\nNumber of training samples: '+str(train_dataset.__len__()))
+    for i, c in enumerate(num_class_train):
+        print("\tLabel {:d}:".format(i).ljust(15)+"{:d}".format(c).rjust(8))
+    print('\nNumber of developing samples: '+str(dev_dataset.__len__()))
+    for i, c in enumerate(num_class_dev):
+        print("\tLabel {:d}:".format(i).ljust(15)+"{:d}".format(c).rjust(8))
+
+
     # make save folder
     try:
         os.makedirs(args.save_folder)

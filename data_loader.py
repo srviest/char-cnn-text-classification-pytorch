@@ -59,6 +59,12 @@ class AGNEWs(Dataset):
     def char2Index(self, character):
         return self.alphabet.find(character)
 
+    def get_class_weight(self):
+        num_samples = self.__len__()
+        label_set = set(self.label)
+        num_class = [self.label.count(c) for c in label_set]
+        class_weight = [num_samples/float(self.label.count(c)) for c in label_set]    
+        return class_weight, num_class
 
 if __name__ == '__main__':
     
