@@ -1,7 +1,7 @@
 ## Introduction
-This is the implementation of Zhang's [Character-level Convolutional Networks for Text Classification](http://arxiv.org/abs/1509.01626) paper in PyTorch.
+This is the implementation of Zhang's [Character-level Convolutional Networks for Text Classification](http://arxiv.org/abs/1509.01626) paper in PyTorch modified from [Shawn1993/cnn-text-classification-pytorch](https://github.com/Shawn1993/cnn-text-classification-pytorch).
 
-Zhang's implementation of the model in Torch:
+Zhang's original implementation in Torch:
 [https://github.com/zhangxiangxiao/Crepe](https://github.com/zhangxiangxiao/Crepe)
 
 ## Requirement
@@ -101,7 +101,7 @@ Label:   3      Prec:  83.7% (1705/2038)  Recall:  90.2% (1705/1890)  F-Score:  
 If you has construct you test set, you make testing like:
 
 ```
-/test.py -test-path="data/ag_news_csv/test.csv" -model-path="models/CharCNN_epoch_10.pth.tar"
+python test.py --test-path='data/ag_news_csv/test.csv' --model-path='models_CharCNN/CharCNN_best.pth.tar'
 ```
 The model-path option means where your model load from.
 
