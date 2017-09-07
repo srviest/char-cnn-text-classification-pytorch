@@ -50,7 +50,7 @@ experiment.add_argument('--verbose', dest='verbose', action='store_true', defaul
 experiment.add_argument('--continue-from', default='', help='Continue from checkpoint model')
 experiment.add_argument('--checkpoint', dest='checkpoint', default=True, action='store_true', help='Enables checkpoint saving of model')
 experiment.add_argument('--checkpoint-per-batch', default=10000, type=int, help='Save checkpoint per batch. 0 means never save [default: 10000]')
-experiment.add_argument('--save-folder', default='models_CharCNN_test/', help='Location to save epoch models, training configurations and results.')
+experiment.add_argument('--save-folder', default='models_CharCNN', help='Location to save epoch models, training configurations and results.')
 experiment.add_argument('--log-config', default=True, action='store_true', help='Store experiment configuration')
 experiment.add_argument('--log-result', default=True, action='store_true', help='Store experiment result')
 experiment.add_argument('--log-interval',  type=int, default=1,   help='how many steps to wait before logging training status [default: 1]')
