@@ -245,11 +245,11 @@ def main():
         with open(os.path.join(args.save_folder,'result.csv'), 'w') as r:
             r.write('{:s},{:s},{:s},{:s},{:s}'.format('epoch', 'batch', 'loss', 'acc', 'lr'))
     # model
-    cnn = CharCNN(args)
+    model = CharCNN(args)
     print(model)
             
     # train 
-    train(train_loader, dev_loader, cnn, args)
+    train(train_loader, dev_loader, model, args)
 
 if __name__ == '__main__':
     main()
