@@ -20,7 +20,7 @@ parser = argparse.ArgumentParser(description='Character level CNN text classifie
 parser.add_argument('--train-path', metavar='DIR',
                     help='path to training data csv', default='data/ag_news_csv/train.csv')
 parser.add_argument('--val-path', metavar='DIR',
-                    help='path to validating data csv', default='data/ag_news_csv/test.csv')
+                    help='path to validation data csv', default='data/ag_news_csv/test.csv')
 # learning
 learn = parser.add_argument_group('Learning options')
 learn.add_argument('--lr', type=float, default=0.0005, help='initial learning rate [default: 0.0005]')

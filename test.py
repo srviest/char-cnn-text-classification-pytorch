@@ -11,91 +11,72 @@ from torch import nn
 import torch.autograd as autograd
 import torch.nn.functional as F
 
-
-parser = argparse.ArgumentParser(description='Character level CNN text classifier testing')
-# data 
-parser.add_argument('-test-path', metavar='DIR',
+parser = argparse.ArgumentParser(description='Character level CNN text classifier testing', formatter_class=argparse.RawTextHelpFormatter)
+# model
+parser.add_argument('--model-path', default=None, help='Path to pre-trained acouctics model created by DeepSpeech training')
+# data
+parser.add_argument('--test-path', metavar='DIR',
                     help='path to testing data csv', default='data/ag_news_csv/test.csv')
+parser.add_argument('--batch-size', type=int, default=20, help='batch size for training [default: 128]')
 parser.add_argument('-alphabet-path', default='alphabet.json', help='Contains all characters for prediction')
 # device
 parser.add_argument('-device', type=int, default=-1, help='device to use for iterate data, -1 mean cpu [default: -1]')
 parser.add_argument('-cuda', action='store_true', default=True, help='enable the gpu' )
 # logging options
 parser.add_argument('-verbose', dest='verbose', action='store_true', default=False, help='Turn on progress tracking per iteration for debugging')
-parser.add_argument('-checkpoint', dest='checkpoint', default=True, action='store_true', help='Enables checkpoint saving of model')
 parser.add_argument('-save-folder', default='models/', help='Location to save epoch models')
 parser.add_argument('-log-interval',  type=int, default=1,   help='how many steps to wait before logging training status [default: 1]')
-parser.add_argument('-test-interval', type=int, default=100, help='how many steps to wait before vaidating [default: 100]')
-parser.add_argument('-save-interval', type=int, default=20, help='how many epochs to wait before saving [default:10]')
+args = parser.parse_args()
 
 
-else :
-        print('\nLoading model from [%s]...' % args.snapshot)
-        try:
-            cnn = torch.load(args.snapshot)
-        except :
-            print("Sorry, This snapshot doesn't exist."); exit()
+if __name__ == '__main__':
 
 
+    # load testing data
+    print("\nLoading testing data...")
+    test_dataset = AGNEWs(label_data_path=args.test_path, alphabet_path=args.alphabet_path)
+    print("Transferring testing data to iterator...")
+    test_loader = DataLoader(test_dataset, batch_size=args.batch_size, num_workers=args.num_workers, drop_last=True)
 
-def eval(data_loader, model, args):
+    _, num_class_test = test_dataset.get_class_weight()
+    print('\nNumber of testing samples: '+str(test_dataset.__len__()))
+    for i, c in enumerate(num_class_test):
+        print("\tLabel {:d}:".format(i).ljust(15)+"{:d}".format(c).rjust(8))
+
+    args.num_features = len(test_dataset.alphabet)
+    model = CharCNN(args)
+    print("=> loading weights from '{}'".format(args.model_path))
+    assert os.path.isfile(args.model_path), "=> no checkpoint found at '{}'".format(args.model_path)
+    checkpoint = torch.load(args.model_path)
+    model.load_state_dict(checkpoint['state_dict'])
+
+    # using GPU
+    if args.cuda:
+        model = torch.nn.DataParallel(model).cuda()
+
     model.eval()
-    corrects, avg_loss, size = 0, 0, 0
-    for i_batch, sample_batched in enumerate(data_loader):
-        inputs = sample_batched['data']
-        target = sample_batched['label']
-        target.sub_(1)
-
+    corrects, avg_loss, accumulated_loss, size = 0, 0, 0, 0
+    predicates_all, target_all = [], []
+    print('\nTesting...')
+    for i_batch, (data) in enumerate(test_loader):
+        inputs, target = data
+        size+=len(target)
         if args.cuda:
             inputs, target = inputs.cuda(), target.cuda()
 
-        inputs = autograd.Variable(inputs)
-        target = autograd.Variable(target)
+        inputs = Variable(inputs, volatile=True)
+        target = Variable(target)
         logit = model(inputs)
-        loss = F.nll_loss(logit, target, size_average=False)
-        correct = (torch.max(logit, 1)[1].view(target.size()).data == target.data).sum()
-        batch_loss = loss.data[0]
-        avg_loss += batch_loss
-        corrects += correct
-        size+=len(target)
-
-    avg_loss = loss.data[0]/size
+        predicates = torch.max(logit, 1)[1].view(target.size()).data
+        accumulated_loss += F.nll_loss(logit, target, size_average=False).data[0]
+        corrects += (torch.max(logit, 1)[1].view(target.size()).data == target.data).sum()
+        predicates_all+=predicates.cpu().numpy().tolist()
+        target_all+=target.data.cpu().numpy().tolist()
+        
+    avg_loss = accumulated_loss/size
     accuracy = 100.0 * corrects/size
-    model.train()
-    print('\nEvaluation - loss: {:.6f}  acc: {:.4f}%({}/{}) \n'.format(avg_loss, 
+    print('\rEvaluation - loss: {:.6f}  acc: {:.3f}%({}/{}) '.format(avg_loss, 
                                                                        accuracy, 
                                                                        corrects, 
                                                                        size))
-if __name__ == '__main__':
-    model = DeepSpeech.load_model(args.model_path, cuda=args.cuda)
-    model.eval()
-
-    labels = DeepSpeech.get_labels(model)
-    audio_conf = DeepSpeech.get_audio_conf(model)
-
-  
-    audio_paths = []
-    if os.path.isdir(args.audio_path):
-        audio_paths = glob.glob(args.audio_path+os.sep+'*.wav')
-    else:
-        audio_paths.append(args.audio_path)
-
-    parser = SpectrogramParser(audio_conf, normalize=True)
-
-    for audio_path in audio_paths:
-        t0 = time.time()
-        spect = parser.parse_audio(audio_path).contiguous()
-        spect = spect.view(1, 1, spect.size(0), spect.size(1))
-        out = model(Variable(spect, volatile=True))
-        out = out.transpose(0, 1)  # TxNxH
-
-        if args.prob:
-            out_numpy = out.data.cpu().numpy()
-            t1 = time.time()
-            print(out_numpy)
-        else:
-            decoded_output = decoder.decode(out.data)
-            t1 = time.time()
-            print(decoded_output[0])
-            
-        print("Decoded {0:.2f} seconds of audio in {1:.2f} seconds\n".format(spect.size(3)*audio_conf['window_stride'], t1-t0))
+    print_f_score(predicates_all, target_all)
