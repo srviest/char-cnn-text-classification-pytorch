@@ -10,7 +10,7 @@ Zhang's implementation of the model in Torch:
 * numpy
 * termcolor
 
-## Basic Usage
+## Train
 ```
 python train.py -h
 ```
@@ -82,9 +82,9 @@ Experiment options:
                         how many epochs to wait before saving [default:1]
 ```
 
-## Train
+
 ```
-./train.py
+python train.py
 ```
 You will get:
 
@@ -101,7 +101,7 @@ Label:   3      Prec:  83.7% (1705/2038)  Recall:  90.2% (1705/1890)  F-Score:  
 If you has construct you test set, you make testing like:
 
 ```
-/test.py -test-path="" -model-path="models/CharCNN_10.pth.tar"
+/test.py -test-path="data/ag_news_csv/test.csv" -model-path="models/CharCNN_epoch_10.pth.tar"
 ```
 The model-path option means where your model load from.
 
