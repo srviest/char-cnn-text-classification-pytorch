@@ -12,7 +12,7 @@ import torch
 from torch import nn
 import torch.optim
 import torch.optim.lr_scheduler
-import torch.autograd as autograd
+from torch.autograd import Variable
 import torch.nn.functional as F
 
 parser = argparse.ArgumentParser(description='Character level CNN text classifier training')
@@ -109,8 +109,8 @@ def train(train_loader, dev_loader, model, args):
             if args.cuda:
                 inputs, target = inputs.cuda(), target.cuda()
 
-            inputs = autograd.Variable(inputs)
-            target = autograd.Variable(target)
+            inputs = Variable(inputs)
+            target = Variable(target)
             logit = model(inputs)
             loss = F.nll_loss(logit, target)
             optimizer.zero_grad()
