@@ -3,7 +3,7 @@ import argparse
 import datetime
 import sys
 import errno
-import model
+from model import CharCNN
 from data_loader import AGNEWs
 from torch.utils.data import DataLoader
 import torch
