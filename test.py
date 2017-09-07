@@ -3,12 +3,12 @@ import argparse
 import datetime
 import sys
 import errno
-import model_CharCNN
+import model
 from data_loader import AGNEWs
 from torch.utils.data import DataLoader
 import torch
 from torch import nn
-import torch.autograd as autograd
+from torch.autograd import Variable
 import torch.nn.functional as F
 
 parser = argparse.ArgumentParser(description='Character level CNN text classifier testing', formatter_class=argparse.RawTextHelpFormatter)
