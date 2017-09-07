@@ -170,6 +170,7 @@ def eval(data_loader, model, epoch_train, batch_train, optimizer, args):
     predicates_all, target_all = [], []
     for i_batch, (data) in enumerate(data_loader):
         inputs, target = data
+        target.sub_(1)
         
         size+=len(target)
         if args.cuda:
