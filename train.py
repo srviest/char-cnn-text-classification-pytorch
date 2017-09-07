@@ -139,7 +139,7 @@ def train(train_loader, dev_loader, model, args):
                                                                              corrects,
                                                                              args.batch_size))
             if i_batch % args.val_interval == 0:
-                val_loss, val_acc = eval(dev_loader, model, epoch, i_batch, args)
+                val_loss, val_acc = eval(dev_loader, model, epoch, i_batch, optimizer, args)
 
             i_batch += 1
         if args.checkpoint and epoch % args.save_interval == 0:
@@ -164,41 +164,45 @@ def train(train_loader, dev_loader, model, args):
             best_acc = val_acc
         print('\n')
 
-def eval(data_loader, model, epoch_train, batch_train, args):
+def eval(data_loader, model, epoch_train, batch_train, optimizer, args):
     model.eval()
     corrects, avg_loss, accumulated_loss, size = 0, 0, 0, 0
     predicates_all, target_all = [], []
     for i_batch, (data) in enumerate(data_loader):
         inputs, target = data
-        target.sub_(1)
-
+        
+        size+=len(target)
         if args.cuda:
             inputs, target = inputs.cuda(), target.cuda()
 
-        inputs = autograd.Variable(inputs)
-        target = autograd.Variable(target)
+        inputs = Variable(inputs, volatile=True)
+        target = Variable(target)
         logit = model(inputs)
-        accumulated_loss += F.nll_loss(logit, target, size_average=False).data[0]
         predicates = torch.max(logit, 1)[1].view(target.size()).data
+        accumulated_loss += F.nll_loss(logit, target, size_average=False).data[0]
         corrects += (torch.max(logit, 1)[1].view(target.size()).data == target.data).sum()
-        size+=len(target)
         predicates_all+=predicates.cpu().numpy().tolist()
         target_all+=target.data.cpu().numpy().tolist()
-
+        if args.cuda:
+            torch.cuda.synchronize()
+        
     avg_loss = accumulated_loss/size
     accuracy = 100.0 * corrects/size
     model.train()
-    
-    print('\nEvaluation - loss: {:.6f}  acc: {:.3f}% ({}/{}) '.format(avg_loss, 
-                                                                       accuracy, 
+    print('\nEvaluation - loss: {:.6f}  lr: {:.5f}  acc: {:.3f}% ({}/{}) '.format(avg_loss, 
+                                                                       optimizer.state_dict()['param_groups'][0]['lr'],
+                                                                       accuracy,
                                                                        corrects, 
                                                                        size))
     print_f_score(predicates_all, target_all)
     print('\n')
-
     if args.log_result:
         with open(os.path.join(args.save_folder,'result.csv'), 'a') as r:
-            r.write('\n{:d},{:d},{:.5f},{:.2f},{:f}'.format(epoch_train, batch_train, avg_loss, accuracy, args.lr))
+            r.write('\n{:d},{:d},{:.5f},{:.2f},{:f}'.format(epoch_train, 
+                                                            batch_train, 
+                                                            avg_loss, 
+                                                            accuracy, 
+                                                            optimizer.state_dict()['param_groups'][0]['lr']))
 
     return avg_loss, accuracy
 
