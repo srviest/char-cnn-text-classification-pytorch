@@ -16,7 +16,6 @@ parser = argparse.ArgumentParser(description='Character level CNN text classifie
 parser.add_argument('--model-path', default=None, help='Path to pre-trained acouctics model created by DeepSpeech training')
 parser.add_argument('--dropout', type=float, default=0.5, help='the probability for dropout [default: 0.5]')
 parser.add_argument('--l0', type=int, default=1014, help='maximum length of input sequence to CNNs [default: 1014]')
-parser.add_argument('--dropout', type=float, default=0.5, help='the probability for dropout [default: 0.5]')
 parser.add_argument('--kernel-num', type=int, default=100, help='number of each kind of kernel')
 parser.add_argument('--kernel-sizes', type=str, default='3,4,5', help='comma-separated kernel size to use for convolution')
 # data
