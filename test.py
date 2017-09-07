@@ -18,14 +18,12 @@ parser.add_argument('--model-path', default=None, help='Path to pre-trained acou
 parser.add_argument('--test-path', metavar='DIR',
                     help='path to testing data csv', default='data/ag_news_csv/test.csv')
 parser.add_argument('--batch-size', type=int, default=20, help='batch size for training [default: 128]')
-parser.add_argument('-alphabet-path', default='alphabet.json', help='Contains all characters for prediction')
+parser.add_argument('--alphabet-path', default='alphabet.json', help='Contains all characters for prediction')
 # device
-parser.add_argument('-device', type=int, default=-1, help='device to use for iterate data, -1 mean cpu [default: -1]')
-parser.add_argument('-cuda', action='store_true', default=True, help='enable the gpu' )
+parser.add_argument('--num-workers', default=4, type=int, help='Number of workers used in data-loading')
+parser.add_argument('--cuda', action='store_true', default=True, help='enable the gpu' )
 # logging options
-parser.add_argument('-verbose', dest='verbose', action='store_true', default=False, help='Turn on progress tracking per iteration for debugging')
-parser.add_argument('-save-folder', default='models/', help='Location to save epoch models')
-parser.add_argument('-log-interval',  type=int, default=1,   help='how many steps to wait before logging training status [default: 1]')
+parser.add_argument('--save-folder', default='Results/', help='Location to save epoch models')
 args = parser.parse_args()
 
 
