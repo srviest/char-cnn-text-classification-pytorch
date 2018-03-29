@@ -217,7 +217,7 @@ def save_checkpoint(model, state, filename):
 
 def main():
     # parse arguments
-    args = parser.parse_args(args=[])
+    args = parser.parse_args()
 
     # load training data
     train_dataset = AGNEWs(label_data_path=args.train_path, alphabet_path=args.alphabet_path)
