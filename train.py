@@ -23,7 +23,7 @@ parser.add_argument('--val_path', metavar='DIR',
                     help='path to validation data csv', default='data/ag_news_csv/test.csv')
 # learning
 learn = parser.add_argument_group('Learning options')
-learn.add_argument('--lr', type=float, default=0.0005, help='initial learning rate [default: 0.0005]')
+learn.add_argument('--lr', type=float, default=0.0001, help='initial learning rate [default: 0.0001]')
 learn.add_argument('--epochs', type=int, default=200, help='number of epochs for train [default: 200]')
 learn.add_argument('--batch_size', type=int, default=32, help='batch size for training [default: 64]')
 learn.add_argument('--max_norm', default=400, type=int, help='Norm cutoff to prevent explosion of gradients')
