@@ -37,7 +37,7 @@ class AGNEWs(Dataset):
     def load(self, lowercase=True):
         self.label = []
         self.data = []
-        with open(self.label_data_path, 'rb') as f:
+        with open(self.label_data_path, 'r') as f:
             rdr = csv.reader(f, delimiter=',', quotechar='"')
             # num_samples = sum(1 for row in rdr)
             for index, row in enumerate(rdr):
