@@ -5,8 +5,8 @@ Zhang's original implementation in Torch:
 [https://github.com/zhangxiangxiao/Crepe](https://github.com/zhangxiangxiao/Crepe)
 
 ## Requirement
-* python 2
-* pytorch > 0.2
+* python 2, 3
+* pytorch >= 0.2
 * numpy
 * termcolor
 
