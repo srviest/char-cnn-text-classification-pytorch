@@ -43,7 +43,7 @@ cnn.add_argument('-kernel_sizes', type=str, default='3,4,5', help='comma-separat
 # device
 device = parser.add_argument_group('Device options')
 device.add_argument('--num_workers', default=1, type=int, help='Number of workers used in data-loading')
-device.add_argument('--cuda', action='store_true', default=True, help='enable the gpu' )
+device.add_argument('--cuda', action='store_true', default=False, help='enable the gpu' )
 # experiment options
 experiment = parser.add_argument_group('Experiment options')
 experiment.add_argument('--verbose', dest='verbose', action='store_true', default=False, help='Turn on progress tracking per iteration for debugging')
@@ -217,7 +217,7 @@ def save_checkpoint(model, state, filename):
 
 def main():
     # parse arguments
-    args = parser.parse_args(args=[])
+    args = parser.parse_args()
 
     # load training data
     train_dataset = AGNEWs(label_data_path=args.train_path, alphabet_path=args.alphabet_path)
