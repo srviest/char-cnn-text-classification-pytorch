@@ -143,7 +143,7 @@ def train(train_loader, dev_loader, model, args):
   
                 val_loss, val_acc = eval(dev_loader, model, epoch, i_batch, optimizer, args)
 
-#             i_batch += 1
+            i_batch += 1
         if args.checkpoint and epoch % args.save_interval == 0:
             file_path = '%s/CharCNN_epoch_%d.pth.tar' % (args.save_folder, epoch)
             print("\r=> saving checkpoint model to %s" % file_path)
@@ -220,7 +220,9 @@ def main():
     args = parser.parse_args()
 
     # load training data
+    print("\nLoading training data...")
     train_dataset = AGNEWs(label_data_path=args.train_path, alphabet_path=args.alphabet_path)
+    print("Transferring training data into iterator...")
     train_loader = DataLoader(train_dataset, batch_size=args.batch_size, num_workers=args.num_workers, drop_last=True, shuffle=True)
     
     # feature length
