@@ -57,6 +57,8 @@ experiment.add_argument('--log_interval',  type=int, default=1,   help='how many
 experiment.add_argument('--val_interval', type=int, default=200, help='how many steps to wait before vaidation [default: 200]')
 experiment.add_argument('--save_interval', type=int, default=1, help='how many epochs to wait before saving [default:1]')
 
+import os
+os.environ['CUDA_VISIBLE_DEVICES']='0' # Add your Device ID in case of multiple GPU devices (imbalance)
 
 def train(train_loader, dev_loader, model, args):
   
