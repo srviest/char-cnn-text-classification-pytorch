@@ -6,7 +6,7 @@ Zhang's original implementation in Torch:
 
 ## Requirement
 * python 2, 3
-* pytorch >= 0.2
+* pytorch >= 0.5
 * numpy
 * termcolor
 
