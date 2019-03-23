@@ -134,7 +134,7 @@ def train(train_loader, dev_loader, model, args):
                 accuracy = 100.0 * corrects/args.batch_size
                 print('Epoch[{}] Batch[{}] - loss: {:.6f}  lr: {:.5f}  acc: {:.3f}% ({}/{})'.format(epoch,
                                                                              i_batch,
-                                                                             loss.data[0],
+                                                                             loss.data,
                                                                              optimizer.state_dict()['param_groups'][0]['lr'],
                                                                              accuracy,
                                                                              corrects,
@@ -182,7 +182,7 @@ def eval(data_loader, model, epoch_train, batch_train, optimizer, args):
         target = Variable(target)
         logit = model(inputs)
         predicates = torch.max(logit, 1)[1].view(target.size()).data
-        accumulated_loss += F.nll_loss(logit, target, size_average=False).data[0]
+        accumulated_loss += F.nll_loss(logit, target, size_average=False).data
         corrects += (torch.max(logit, 1)[1].view(target.size()).data == target.data).sum()
         predicates_all+=predicates.cpu().numpy().tolist()
         target_all+=target.data.cpu().numpy().tolist()
@@ -221,7 +221,8 @@ def main():
 
     # load training data
     print("\nLoading training data...")
-    train_dataset = AGNEWs(label_data_path=args.train_path, alphabet_path=args.alphabet_path)
+    
+    train_dataset = AGNEWs(label_data_path=args.train_path, alphabet_path=args.alphabet_path, l0=args.l0)
     print("Transferring training data into iterator...")
     train_loader = DataLoader(train_dataset, batch_size=args.batch_size, num_workers=args.num_workers, drop_last=True, shuffle=True)
     
@@ -230,7 +231,7 @@ def main():
 
     # load developing data
     print("\nLoading developing data...")
-    dev_dataset = AGNEWs(label_data_path=args.val_path, alphabet_path=args.alphabet_path)
+    dev_dataset = AGNEWs(label_data_path=args.val_path, alphabet_path=args.alphabet_path, l0=args.l0)
     print("Transferring developing data into iterator...")
     dev_loader = DataLoader(dev_dataset, batch_size=args.batch_size, num_workers=args.num_workers, drop_last=True)
 
