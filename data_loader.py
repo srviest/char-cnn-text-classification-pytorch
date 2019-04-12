@@ -1,14 +1,12 @@
-import csv
-import os.path as op
-import re
-import torch
-import codecs
-import json
+#!/usr/bin/env python3
 from torch.utils.data import DataLoader, Dataset
 import torch.autograd as autograd
+import torch
+import json
+import csv
 
 class AGNEWs(Dataset):
-    def __init__(self, label_data_path, alphabet_path, l0=1014):
+    def __init__(self, label_data_path, alphabet_path, l0 = 1014):
         """Create AG's News dataset object.
 
         Arguments:
@@ -17,27 +15,29 @@ class AGNEWs(Dataset):
             alphabet_path: The path of alphabet json file.
         """
         self.label_data_path = label_data_path
-        # read alphabet
-        with open(alphabet_path) as alphabet_file:
-            alphabet = str(''.join(json.load(alphabet_file)))
-        self.alphabet = alphabet
         self.l0 = l0
-        self.load()
-        self.y = torch.LongTensor(self.label)
+        # read alphabet
+        self.loadAlphabet(alphabet_path)
+        self.load(label_data_path)
+        
             
     def __len__(self):
         return len(self.label)
+
 
     def __getitem__(self, idx):
         X = self.oneHotEncode(idx)
         y = self.y[idx]
         return X, y
 
+    def loadAlphabet(self, alphabet_path):
+        with open(alphabet_path) as f:
+            self.alphabet = ''.join(json.load(f))
 
-    def load(self, lowercase=True):
+    def load(self, label_data_path, lowercase = True):
         self.label = []
         self.data = []
-        with open(self.label_data_path, 'r') as f:
+        with open(label_data_path, 'r') as f:
             rdr = csv.reader(f, delimiter=',', quotechar='"')
             # num_samples = sum(1 for row in rdr)
             for index, row in enumerate(rdr):
@@ -46,6 +46,9 @@ class AGNEWs(Dataset):
                 if lowercase:
                     txt = txt.lower()                
                 self.data.append(txt)
+
+        self.y = torch.LongTensor(self.label)
+
 
     def oneHotEncode(self, idx):
         # X = (batch, 70, sequence_length)
@@ -59,7 +62,7 @@ class AGNEWs(Dataset):
     def char2Index(self, character):
         return self.alphabet.find(character)
 
-    def get_class_weight(self):
+    def getClassWeight(self):
         num_samples = self.__len__()
         label_set = set(self.label)
         num_class = [self.label.count(c) for c in label_set]
@@ -68,20 +71,21 @@ class AGNEWs(Dataset):
 
 if __name__ == '__main__':
     
-    label_data_path = '/Users/ychen/Documents/TextClfy/data/ag_news_csv/test.csv'
-    alphabet_path = '/Users/ychen/Documents/TextClfy/alphabet.json'
+    label_data_path = 'data/ag_news_csv/test.csv'
+    alphabet_path = 'alphabet.json'
 
     train_dataset = AGNEWs(label_data_path, alphabet_path)
     train_loader = DataLoader(train_dataset, batch_size=64, num_workers=4, drop_last=False)
-    # print(len(train_loader))
-    # print(train_loader.__len__())
 
     # size = 0
     for i_batch, sample_batched in enumerate(train_loader):
-
+        if i_batch == 0:
+            print(sample_batched[0][0][0].shape)
+        
+        # print(sample_batched)
         # len(i_batch)
         # print(sample_batched['label'].size())
-        inputs = sample_batched['data']
-        print(inputs.size())
+        # inputs = sample_batched['data']
+        # print(inputs.size())
         # print('type(target): ', target)
         

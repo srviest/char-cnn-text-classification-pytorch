@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 from termcolor import cprint, colored as c
 
 def inc(d, label):

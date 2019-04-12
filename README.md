@@ -10,6 +10,21 @@ Zhang's original implementation in Torch:
 * numpy
 * termcolor
 
+## Dataset Format
+Each sample looks like:  
+
+```
+"class idx","sentence or text to be classified"  
+```  
+
+Samples are separated by newline.  
+
+Example:  
+
+```
+"3","Fears for T N pension after talks, Unions representing workers at Turner   Newall say they are 'disappointed' after talks with stricken parent firm Federal Mogul."
+```
+
 ## Train
 ```
 python train.py -h
@@ -22,63 +37,63 @@ Character-level CNN text classifier
 
 optional arguments:
   -h, --help            show this help message and exit
-  --train-path DIR      path to training data csv
-  --val-path DIR        path to validating data csv
+  --train_path DIR      path to training data csv
+  --val_path DIR        path to validation data csv
 
 Learning options:
-  --lr LR               initial learning rate [default: 0.0005]
+  --lr LR               initial learning rate [default: 0.0001]
   --epochs EPOCHS       number of epochs for train [default: 200]
-  --batch-size BATCH_SIZE
-                        batch size for training [default: 128]
-  --max-norm MAX_NORM   Norm cutoff to prevent explosion of gradients
+  --batch_size BATCH_SIZE
+                        batch size for training [default: 64]
+  --max_norm MAX_NORM   Norm cutoff to prevent explosion of gradients
   --optimizer OPTIMIZER
                         Type of optimizer. SGD|Adam|ASGD are supported
                         [default: Adam]
-  --class-weight        Weights should be a 1D Tensor assigning weight to each
+  --class_weight        Weights should be a 1D Tensor assigning weight to each
                         of the classes.
-  --dynamic-lr          Use dynamic learning schedule.
+  --dynamic_lr          Use dynamic learning schedule.
   --milestones MILESTONES [MILESTONES ...]
                         List of epoch indices. Must be increasing.
                         Default:[5,10,15]
-  --decay-factor DECAY_FACTOR
+  --decay_factor DECAY_FACTOR
                         Decay factor for reducing learning rate [default: 0.5]
 
 Model options:
-  --alphabet-path ALPHABET_PATH
+  --alphabet_path ALPHABET_PATH
                         Contains all characters for prediction
   --l0 L0               maximum length of input sequence to CNNs [default:
                         1014]
   --shuffle             shuffle the data every epoch
   --dropout DROPOUT     the probability for dropout [default: 0.5]
-  -kernel-num KERNEL_NUM
+  -kernel_num KERNEL_NUM
                         number of each kind of kernel
-  -kernel-sizes KERNEL_SIZES
+  -kernel_sizes KERNEL_SIZES
                         comma-separated kernel size to use for convolution
 
 Device options:
-  --num-workers NUM_WORKERS
+  --num_workers NUM_WORKERS
                         Number of workers used in data-loading
   --cuda                enable the gpu
 
 Experiment options:
   --verbose             Turn on progress tracking per iteration for debugging
-  --continue-from CONTINUE_FROM
+  --continue_from CONTINUE_FROM
                         Continue from checkpoint model
   --checkpoint          Enables checkpoint saving of model
-  --checkpoint-per-batch CHECKPOINT_PER_BATCH
+  --checkpoint_per_batch CHECKPOINT_PER_BATCH
                         Save checkpoint per batch. 0 means never save
                         [default: 10000]
-  --save-folder SAVE_FOLDER
+  --save_folder SAVE_FOLDER
                         Location to save epoch models, training configurations
                         and results.
-  --log-config          Store experiment configuration
-  --log-result          Store experiment result
-  --log-interval LOG_INTERVAL
+  --log_config          Store experiment configuration
+  --log_result          Store experiment result
+  --log_interval LOG_INTERVAL
                         how many steps to wait before logging training status
                         [default: 1]
-  --val-interval VAL_INTERVAL
+  --val_interval VAL_INTERVAL
                         how many steps to wait before vaidation [default: 200]
-  --save-interval SAVE_INTERVAL
+  --save_interval SAVE_INTERVAL
                         how many epochs to wait before saving [default:1]
 ```
 
