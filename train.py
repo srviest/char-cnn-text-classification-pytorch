@@ -61,7 +61,6 @@ experiment.add_argument('--save_interval', type=int, default=1, help='how many e
 
 def train(train_loader, dev_loader, model, args):
   
-
     # optimization scheme
     if args.optimizer == 'Adam':
         optimizer = optim.Adam(model.parameters(), lr = args.lr)
@@ -217,10 +216,10 @@ def save_checkpoint(model, state, filename):
     torch.save(state,filename)
 
 
-def make_data_loader(dataset_path):
+def make_data_loader(dataset_path, alphabet_path, l0, batch_size, num_workers):
     print("\nLoading data from {}".format(dataset_path))
-    dataset = AGNEWs(label_data_path=dataset_path, alphabet_path=args.alphabet_path, l0=args.l0)
-    dataset_loader = DataLoader(dataset, batch_size=args.batch_size, num_workers=args.num_workers, drop_last=True, shuffle=True)
+    dataset = AGNEWs(label_data_path=dataset_path, alphabet_path=alphabet_path, l0=l0)
+    dataset_loader = DataLoader(dataset, batch_size=batch_size, num_workers=num_workers, drop_last=True, shuffle=True)
     return dataset, dataset_loader
 
 
@@ -228,10 +227,11 @@ def main():
     # parse arguments
     args = parser.parse_args()
 
-    # load training data
-    train_dataset, train_loader = make_data_loader(args.train_path)
-    # load developing data
-    dev_dataset, dev_loader = make_data_loader(args.train_path)
+    # load train and dev data
+    train_dataset, train_loader = make_data_loader(args.train_path, 
+        args.alphabet_path, args.l0, args.batch_size, args.num_workers)
+    dev_dataset, dev_loader = make_data_loader(args.val_path, 
+        args.alphabet_path, args.l0, args.batch_size, args.num_workers)
 
     # feature length
     args.num_features = len(train_dataset.alphabet)
